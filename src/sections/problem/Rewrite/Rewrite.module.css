@@ -1,0 +1,122 @@
+.root {
+  position: relative;
+  height: 400vh;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  padding: calc(var(--u) * 6) var(--gutter);
+}
+
+.eyebrow {
+  color: var(--grey-40);
+}
+
+/* One sentence at a time, in the same place, so the visitor watches
+   which words get taken away rather than reading a list of versions. */
+.stack {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.beat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+}
+
+.holder {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+  color: var(--grey-60);
+  margin-bottom: calc(var(--u) * 3.5);
+}
+.holderRule {
+  display: block;
+  width: 44px;
+  height: 1px;
+  background: currentColor;
+}
+
+.line {
+  margin: 0;
+  max-width: 22ch;
+}
+
+/* Anton sets tight and leaves almost no room under the baseline, so
+   the annotation has to be pushed clear of it explicitly. */
+.lost {
+  margin-top: calc(var(--u) * 6);
+  color: var(--grey-40);
+  max-width: 44ch;
+}
+
+/* ---- the return ------------------------------------------------- */
+
+.origin {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(var(--u) * 16);
+  opacity: 0;
+}
+
+.originLabel {
+  color: var(--grey-40);
+  display: block;
+  margin-bottom: calc(var(--u) * 2);
+}
+
+.originLine {
+  margin: 0;
+  color: var(--grey-60);
+  font-size: clamp(1.1rem, 2vw, 1.9rem);
+  font-family: var(--font-body);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.25;
+  max-width: 34ch;
+}
+
+/* ---- beat pips --------------------------------------------------- */
+
+.pips {
+  position: absolute;
+  left: var(--gutter);
+  bottom: calc(var(--u) * 6);
+  display: flex;
+  gap: calc(var(--u) * 1);
+}
+.pip {
+  width: 26px;
+  height: 2px;
+  background: var(--grey-20);
+}
+.pipOn {
+  background: var(--grey-80);
+}
+
+.close {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  opacity: 0;
+  max-width: 20ch;
+  pointer-events: none;
+}

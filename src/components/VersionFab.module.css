@@ -17,21 +17,42 @@
 .panel {
   --chamfer: 12px;
   background: var(--grey-05);
-  padding: calc(var(--u) * 1) 0;
-  min-width: 268px;
+  padding: calc(var(--u) * 1.5) 0 calc(var(--u) * 1);
+  min-width: 320px;
+  max-height: min(72vh, 620px);
+  overflow-y: auto;
   transform-origin: bottom right;
-  overflow: hidden;
+  scrollbar-width: none;
+}
+.panel::-webkit-scrollbar {
+  width: 0;
 }
 
 .panelHidden {
   display: none;
 }
 
-.panelHead {
+.group + .group {
+  margin-top: calc(var(--u) * 1.5);
+  padding-top: calc(var(--u) * 1.5);
+  border-top: 1px solid #2a2a28;
+}
+
+.groupHead {
   display: flex;
-  justify-content: space-between;
-  padding: calc(var(--u) * 1) calc(var(--u) * 2) calc(var(--u) * 1.5);
+  align-items: baseline;
+  gap: calc(var(--u) * 1.5);
+  padding: 0 calc(var(--u) * 2.5) calc(var(--u) * 1);
   color: var(--grey-60);
+}
+
+.groupIntent {
+  display: block;
+  padding: 0 calc(var(--u) * 2.5) calc(var(--u) * 1.75);
+  color: var(--grey-40);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  max-width: 40ch;
 }
 
 .row {
@@ -39,7 +60,7 @@
   align-items: baseline;
   gap: calc(var(--u) * 1.5);
   width: 100%;
-  padding: calc(var(--u) * 1.25) calc(var(--u) * 2);
+  padding: calc(var(--u) * 1.25) calc(var(--u) * 2.5);
   text-align: left;
   color: var(--grey-80);
   transition: color 0.25s var(--ease-io), background-color 0.25s var(--ease-io);
@@ -69,9 +90,9 @@
 .rowName {
   font-family: var(--font-display);
   font-variation-settings: 'wdth' var(--wdth-display);
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.015em;
   text-transform: uppercase;
   line-height: 1;
 }
@@ -103,7 +124,7 @@
   place-items: center;
   width: 44px;
   color: var(--grey-60);
-  border-right: 1px solid var(--grey-20);
+  border-right: 1px solid #2a2a28;
   transition: color 0.25s var(--ease-io);
 }
 .util:hover {
@@ -155,10 +176,10 @@
 
 @media (max-width: 640px) {
   .mainLabel,
-  .panelHead {
+  .groupIntent {
     display: none;
   }
   .panel {
-    min-width: 216px;
+    min-width: 244px;
   }
 }

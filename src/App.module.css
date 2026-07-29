@@ -1,7 +1,7 @@
 .stage {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
 }
 
 /* Concept-to-concept transition. Kept short and mechanical so it reads
@@ -27,4 +27,26 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   letter-spacing: 0.14em;
+}
+
+/* Scroll affordance for the scroll-driven versions — the page has no
+   scrollbar, so it has to be said. */
+.scrollHint {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--u) * 4.5);
+  transform: translateX(-50%);
+  z-index: 40;
+  color: var(--grey-40);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+}
+
+.scrollHintTick {
+  display: block;
+  width: 1px;
+  height: 18px;
+  background: currentColor;
 }

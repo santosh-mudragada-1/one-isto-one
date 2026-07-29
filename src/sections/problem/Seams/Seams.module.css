@@ -1,0 +1,110 @@
+.root {
+  position: relative;
+  height: 400vh;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--u) * 6) var(--gutter);
+}
+
+.eyebrow {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(var(--u) * 6);
+  color: var(--grey-40);
+}
+
+.head {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(var(--u) * 11);
+  margin: 0;
+  max-width: 14ch;
+  opacity: 0;
+}
+
+/* ---- the object ------------------------------------------------- */
+
+.stage {
+  position: relative;
+  width: min(1020px, 86vw);
+  height: clamp(200px, 32vh, 360px);
+}
+
+.panel {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 16.6667%;
+  will-change: transform;
+}
+
+.panelName {
+  position: absolute;
+  top: calc(100% + var(--u) * 2);
+  left: 0;
+  color: var(--grey-60);
+  opacity: 0;
+  white-space: nowrap;
+  font-size: 0.5625rem;
+}
+
+/* ---- the joins -------------------------------------------------- */
+
+.seam {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 1px;
+  background: var(--ink);
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 3;
+}
+
+.seamNote {
+  position: absolute;
+  bottom: calc(100% + var(--u) * 1.5);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--grey-60);
+  white-space: nowrap;
+  opacity: 0;
+  font-size: 0.5625rem;
+}
+
+/* The join that opens. */
+.seamWide {
+  z-index: 6;
+}
+
+.close {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  opacity: 0;
+  max-width: 18ch;
+  z-index: 8;
+  pointer-events: none;
+}
+
+@media (max-width: 820px) {
+  .panelName {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+  .seamNote {
+    display: none;
+  }
+}

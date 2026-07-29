@@ -1,8 +1,8 @@
 import { useRef } from 'react'
-import { gsap, prefersReducedMotion } from '../../lib/gsap'
-import { sfx } from '../../lib/sound'
-import { useGsap } from '../../lib/useGsap'
-import Chrome from '../../components/Chrome'
+import { gsap, prefersReducedMotion } from '../../../lib/gsap'
+import { sfx } from '../../../lib/sound'
+import { useGsap } from '../../../lib/useGsap'
+import Chrome from '../../../components/Chrome'
 import styles from './ActualSize.module.css'
 
 /**

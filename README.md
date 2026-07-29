@@ -16,27 +16,46 @@ npm run dev      # http://localhost:5173
 
 ## Controls
 
-| Key     | Does                       |
-| ------- | -------------------------- |
-| `1`–`5` | jump to a concept          |
-| `R`     | replay the current concept |
-| `S`     | sound on / off             |
-| `Esc`   | close the switcher         |
+| Key       | Does                                   |
+| --------- | -------------------------------------- |
+| `1`–`5`   | pick a version inside the current section |
+| `↑` / `↓` | move between sections                  |
+| `R`       | replay the current version             |
+| `S`       | sound on / off                         |
+| `Esc`     | close the switcher                     |
 
 Sound is **off by default**. Concept 03's registration lock is the one worth
 turning it on for.
 
-## The concepts
+## Section 01 — Hero
 
-| #   | Name              | Signature interaction                                  |
-| --- | ----------------- | ------------------------------------------------------ |
-| 01  | Actual Size       | the page measures itself — the figures are real         |
-| 02  | The Sentence      | the changing word physically pushes the sentence along  |
-| 03  | Registration      | two impressions lock into register; the cursor un-locks them |
-| 04  | The Unbroken Line | one stroke that never lifts                             |
-| 05  | The Living Ratio  | the colon splits the screen and always returns to 1:1   |
+_Businesses are experienced as one, yet built in pieces._
 
-Only one of these ships. The rest get deleted once a direction is chosen.
+| #   | Name              | Signature interaction                                        |
+| --- | ----------------- | ------------------------------------------------------------ |
+| 01  | Actual Size       | the page measures itself — the figures are real               |
+| 02  | The Sentence      | the changing word physically pushes the sentence along        |
+| 03  | Registration      | two impressions lock into register; the cursor un-locks them  |
+| 04  | The Unbroken Line | one stroke that never lifts                                   |
+| 05  | The Living Ratio  | the colon splits the screen and always returns to 1:1         |
+
+## Section 02 — The Problem
+
+_Everyone did their job. So whose job was the part that went wrong?_
+
+Where the Hero is **simultaneity**, this is **sequence** — the pieces did not
+arrive together. Every version is scroll-driven, and none of them resolve;
+resolution belongs to Section 03.
+
+| #   | Name               | Signature interaction                                          |
+| --- | ------------------ | -------------------------------------------------------------- |
+| 01  | Six Calendars      | drag one customer across two years of separate decisions        |
+| 02  | The Relay          | quality rises and coherence drains in the same motion           |
+| 03  | The Rewrite        | six defensible edits, then the original returns underneath      |
+| 04  | The Sign-Off Sheet | the row nobody signed — and the form refuses your signature     |
+| 05  | The Seams          | the joins stay visible after the pieces close                   |
+
+One version per section ships. The rest get deleted once a direction is chosen.
 
 ## How it's put together
 

@@ -1,20 +1,33 @@
-import { useCallback, useRef, useState } from 'react'
-import { gsap, prefersReducedMotion } from './lib/gsap'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { gsap, ScrollTrigger, prefersReducedMotion } from './lib/gsap'
 import VersionFab from './components/VersionFab'
-import { CONCEPTS } from './heroes'
+import { SECTIONS } from './sections'
 import styles from './App.module.css'
 
 export default function App() {
-  const [index, setIndex] = useState(0)
-  /** Bumping this remounts the hero, which replays it from frame one. */
+  const [section, setSection] = useState(0)
+  const [version, setVersion] = useState(0)
+  /** Bumping this remounts the version, replaying it from frame one. */
   const [take, setTake] = useState(0)
 
   const curtain = useRef<HTMLDivElement | null>(null)
   const label = useRef<HTMLDivElement | null>(null)
   const busy = useRef(false)
 
+  const current = SECTIONS[section]
+  const currentVersion = current.versions[version]
+
+  /* A scroll-driven version starts at the top with its triggers freshly
+     measured — otherwise it inherits the previous version's scroll
+     position and starts halfway through itself. */
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    const id = window.setTimeout(() => ScrollTrigger.refresh(), 60)
+    return () => window.clearTimeout(id)
+  }, [section, version, take])
+
   /** Cover, swap, uncover. */
-  const wipe = useCallback((apply: () => void, incoming: number) => {
+  const wipe = useCallback((apply: () => void, s: number, v: number) => {
     const el = curtain.current
     if (!el || prefersReducedMotion()) {
       apply()
@@ -23,9 +36,11 @@ export default function App() {
     if (busy.current) return
     busy.current = true
 
-    const c = CONCEPTS[incoming]
+    const target = SECTIONS[s].versions[v]
     if (label.current) {
-      label.current.innerHTML = `<span class="${styles.curtainNum}">${c.num}</span><span class="label">${c.name}</span>`
+      label.current.innerHTML =
+        `<span class="${styles.curtainNum}">${SECTIONS[s].num} — ${target.num}</span>` +
+        `<span class="label">${target.name}</span>`
     }
 
     gsap
@@ -39,33 +54,47 @@ export default function App() {
   }, [])
 
   const select = useCallback(
-    (i: number) => {
-      if (i === index) {
-        wipe(() => setTake((t) => t + 1), i)
+    (s: number, v: number) => {
+      const clampedV = Math.min(v, SECTIONS[s].versions.length - 1)
+      if (s === section && clampedV === version) {
+        wipe(() => setTake((t) => t + 1), s, clampedV)
         return
       }
-      wipe(() => setIndex(i), i)
+      wipe(() => {
+        setSection(s)
+        setVersion(clampedV)
+      }, s, clampedV)
     },
-    [index, wipe]
+    [section, version, wipe]
   )
 
-  const replay = useCallback(() => {
-    setTake((t) => t + 1)
-  }, [])
+  const replay = useCallback(() => setTake((t) => t + 1), [])
 
-  const { Component } = CONCEPTS[index]
+  const { Component } = currentVersion
 
   return (
     <>
       <main className={styles.stage}>
-        <Component key={`${index}-${take}`} />
+        <Component key={`${section}-${version}-${take}`} />
       </main>
+
+      {currentVersion.scrolls && (
+        <span className={`${styles.scrollHint} label`} aria-hidden="true">
+          Scroll
+          <span className={styles.scrollHintTick} />
+        </span>
+      )}
 
       <div className={styles.curtain} ref={curtain} aria-hidden="true">
         <div className={styles.curtainInner} ref={label} />
       </div>
 
-      <VersionFab index={index} onSelect={select} onReplay={replay} />
+      <VersionFab
+        section={section}
+        version={version}
+        onSelect={select}
+        onReplay={replay}
+      />
     </>
   )
 }

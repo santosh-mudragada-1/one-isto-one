@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
-import { gsap, prefersReducedMotion } from '../../lib/gsap'
-import { sfx } from '../../lib/sound'
-import { useGsap } from '../../lib/useGsap'
-import Mark from '../../components/Mark'
-import TopBar from '../../components/TopBar'
+import { gsap, prefersReducedMotion } from '../../../lib/gsap'
+import { sfx } from '../../../lib/sound'
+import { useGsap } from '../../../lib/useGsap'
+import Mark from '../../../components/Mark'
+import TopBar from '../../../components/TopBar'
 import styles from './Ratio.module.css'
 
 /* Not "design deliverables" — the things a business actually owns. This

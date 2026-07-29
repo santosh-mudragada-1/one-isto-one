@@ -22,7 +22,20 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* the deck is one viewport per concept */
+  /* Hero versions fill exactly one viewport and never scroll; the
+     Section 02 versions are scroll-driven, so the page scroller has to
+     stay available for ScrollTrigger. */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* No visible scrollbar — it would sit inside the composition. */
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+body {
+  scrollbar-width: none;
 }
 
 h1,

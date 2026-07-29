@@ -1,32 +1,36 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, prefersReducedMotion } from '../lib/gsap'
 import { sfx, setSound, soundEnabled } from '../lib/sound'
-import { CONCEPTS } from '../heroes'
+import { SECTIONS } from '../sections'
 import styles from './VersionFab.module.css'
 
 type Props = {
-  index: number
-  onSelect: (i: number) => void
+  section: number
+  version: number
+  onSelect: (section: number, version: number) => void
   onReplay: () => void
 }
 
-export default function VersionFab({ index, onSelect, onReplay }: Props) {
+export default function VersionFab({
+  section,
+  version,
+  onSelect,
+  onReplay,
+}: Props) {
   const [open, setOpen] = useState(false)
   const [sound, setSoundState] = useState(soundEnabled())
   const panelRef = useRef<HTMLDivElement | null>(null)
-  const rowsRef = useRef<HTMLDivElement | null>(null)
 
   /* Open / close. The panel is display:none while closed so it never
-     traps focus or intercepts a pointer over the hero. */
+     traps focus or intercepts a pointer over the section. */
   useEffect(() => {
     const panel = panelRef.current
-    const rows = rowsRef.current
-    if (!panel || !rows) return
+    if (!panel) return
+    const rows = panel.querySelectorAll(`.${styles.row}`)
 
-    const items = rows.children
     if (prefersReducedMotion()) {
       gsap.set(panel, { opacity: open ? 1 : 0 })
-      gsap.set(items, { opacity: open ? 1 : 0, y: 0 })
+      gsap.set(rows, { opacity: open ? 1 : 0, y: 0 })
       return
     }
 
@@ -35,9 +39,9 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
         .timeline()
         .fromTo(panel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35 })
         .fromTo(
-          items,
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.4, stagger: 0.045 },
+          rows,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.028 },
           0.05
         )
     } else {
@@ -45,14 +49,25 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
     }
   }, [open])
 
-  /* Keyboard: 1–5 switch, R replays, S toggles sound, Esc closes. */
+  /* Keyboard: digits pick a version inside the current section, arrows
+     move between sections. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
       if (target && /^(INPUT|TEXTAREA)$/.test(target.tagName)) return
 
-      if (e.key >= '1' && e.key <= String(CONCEPTS.length)) {
-        onSelect(Number(e.key) - 1)
+      const versions = SECTIONS[section].versions
+
+      if (e.key >= '1' && e.key <= String(versions.length)) {
+        onSelect(section, Number(e.key) - 1)
+        sfx.click()
+      } else if (e.key === 'ArrowDown' || e.key === ']') {
+        e.preventDefault()
+        onSelect(Math.min(section + 1, SECTIONS.length - 1), version)
+        sfx.click()
+      } else if (e.key === 'ArrowUp' || e.key === '[') {
+        e.preventDefault()
+        onSelect(Math.max(section - 1, 0), version)
         sfx.click()
       } else if (e.key.toLowerCase() === 'r') {
         onReplay()
@@ -65,7 +80,7 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onSelect, onReplay])
+  }, [section, version, onSelect, onReplay])
 
   function toggleSound() {
     const next = !soundEnabled()
@@ -74,7 +89,8 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
     if (next) sfx.click()
   }
 
-  const current = CONCEPTS[index]
+  const current = SECTIONS[section]
+  const currentVersion = current.versions[version]
 
   return (
     <div className={styles.root}>
@@ -82,33 +98,40 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
         ref={panelRef}
         className={`${styles.panel} chamfer ${open ? '' : styles.panelHidden}`}
         role="listbox"
-        aria-label="Hero concept"
+        aria-label="Section and version"
       >
-        <div className={`${styles.panelHead} label`}>
-          <span>Hero concept</span>
-          <span>{CONCEPTS.length} directions</span>
-        </div>
+        {SECTIONS.map((s, si) => (
+          <div key={s.id} className={styles.group}>
+            <div className={`${styles.groupHead} label`}>
+              <span>Section {s.num}</span>
+              <span>{s.name}</span>
+            </div>
+            <span className={styles.groupIntent}>{s.intent}</span>
 
-        <div ref={rowsRef}>
-          {CONCEPTS.map((c, i) => (
-            <button
-              key={c.id}
-              className={`${styles.row} ${i === index ? styles.rowActive : ''}`}
-              role="option"
-              aria-selected={i === index}
-              onMouseEnter={() => sfx.hover()}
-              onClick={() => {
-                onSelect(i)
-                sfx.click()
-                setOpen(false)
-              }}
-            >
-              <span className={styles.rowNum}>{c.num}</span>
-              <span className={styles.rowName}>{c.name}</span>
-              <span className={styles.rowDot} />
-            </button>
-          ))}
-        </div>
+            {s.versions.map((v, vi) => {
+              const active = si === section && vi === version
+              return (
+                <button
+                  key={v.id}
+                  className={`${styles.row} ${active ? styles.rowActive : ''}`}
+                  role="option"
+                  aria-selected={active}
+                  title={v.signature}
+                  onMouseEnter={() => sfx.hover()}
+                  onClick={() => {
+                    onSelect(si, vi)
+                    sfx.click()
+                    setOpen(false)
+                  }}
+                >
+                  <span className={styles.rowNum}>{v.num}</span>
+                  <span className={styles.rowName}>{v.name}</span>
+                  <span className={styles.rowDot} />
+                </button>
+              )
+            })}
+          </div>
+        ))}
       </div>
 
       <div className={`${styles.cluster} chamfer`}>
@@ -119,7 +142,7 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
             sfx.click()
           }}
           onMouseEnter={() => sfx.hover()}
-          aria-label="Replay this concept"
+          aria-label="Replay this version"
           title="Replay (R)"
         >
           <svg className={styles.icon} viewBox="0 0 24 24">
@@ -157,10 +180,14 @@ export default function VersionFab({ index, onSelect, onReplay }: Props) {
           }}
           onMouseEnter={() => sfx.hover()}
           aria-expanded={open}
-          aria-label="Choose hero concept"
+          aria-label="Choose section and version"
         >
-          <span className={styles.mainNum}>{current.num}</span>
-          <span className={`${styles.mainLabel} label`}>{current.name}</span>
+          <span className={styles.mainNum}>
+            {current.num} · {currentVersion.num}
+          </span>
+          <span className={`${styles.mainLabel} label`}>
+            {currentVersion.name}
+          </span>
           <span className={`${styles.caret} ${open ? styles.caretOpen : ''}`} />
         </button>
       </div>

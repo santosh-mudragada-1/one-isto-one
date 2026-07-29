@@ -1,0 +1,153 @@
+.root {
+  position: relative;
+  height: 420vh;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--u) * 6) var(--gutter);
+}
+
+.eyebrow {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(var(--u) * 6);
+  color: var(--grey-40);
+}
+
+/* The most ordinary object on the whole site: a form. That is the
+   point — it will land hardest precisely because it is not designed. */
+.sheet {
+  width: min(920px, 100%);
+  font-family: var(--font-mono);
+}
+
+.sheetHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: calc(var(--u) * 2);
+  color: var(--grey-60);
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 230px 132px;
+  gap: calc(var(--u) * 2);
+  padding: calc(var(--u) * 1.5) 0;
+  border-top: 1px solid var(--grey-20);
+  color: var(--grey-40);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 230px 132px;
+  gap: calc(var(--u) * 2);
+  align-items: center;
+  padding: calc(var(--u) * 2) 0;
+  border-top: 1px solid var(--grey-20);
+  color: var(--grey-40);
+}
+
+.deliverable {
+  font-size: clamp(0.875rem, 1.15vw, 1.0625rem);
+  letter-spacing: 0.01em;
+}
+
+.supplier,
+.approved {
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.approved {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.25);
+}
+
+.tick {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  opacity: 0;
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 1.6;
+}
+
+.stamp {
+  opacity: 0;
+  color: var(--grey-60);
+}
+
+/* ---- the row nobody signed ------------------------------------- */
+
+.rowOpen {
+  opacity: 0;
+  color: var(--paper);
+  border-top-color: var(--grey-40);
+}
+
+.box {
+  --chamfer: 6px;
+  width: 62px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid var(--grey-60);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.caret {
+  width: 1px;
+  height: 14px;
+  background: var(--paper);
+}
+
+.noOwner {
+  color: var(--grey-40);
+  opacity: 0;
+}
+
+.refusal {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--u) * 12);
+  color: var(--grey-60);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.close {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  opacity: 0;
+  max-width: 16ch;
+  pointer-events: none;
+}
+
+@media (max-width: 820px) {
+  .cols,
+  .row {
+    grid-template-columns: 1fr 96px;
+  }
+  .supplier {
+    display: none;
+  }
+}
