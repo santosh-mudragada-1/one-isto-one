@@ -1,0 +1,164 @@
+.root {
+  position: fixed;
+  right: calc(var(--u) * 3);
+  bottom: calc(var(--u) * 3);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--u) * 1.5);
+  color: var(--paper);
+}
+
+/* ---- the list ------------------------------------------------ */
+
+/* Filled rather than outlined, so the clipped corner stays a clean cut
+   instead of an open one. */
+.panel {
+  --chamfer: 12px;
+  background: var(--grey-05);
+  padding: calc(var(--u) * 1) 0;
+  min-width: 268px;
+  transform-origin: bottom right;
+  overflow: hidden;
+}
+
+.panelHidden {
+  display: none;
+}
+
+.panelHead {
+  display: flex;
+  justify-content: space-between;
+  padding: calc(var(--u) * 1) calc(var(--u) * 2) calc(var(--u) * 1.5);
+  color: var(--grey-60);
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 1.5);
+  width: 100%;
+  padding: calc(var(--u) * 1.25) calc(var(--u) * 2);
+  text-align: left;
+  color: var(--grey-80);
+  transition: color 0.25s var(--ease-io), background-color 0.25s var(--ease-io);
+}
+
+.row:hover {
+  color: var(--paper);
+  background: #2a2a28;
+}
+
+.rowActive {
+  color: var(--light);
+}
+
+.rowNum {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  color: var(--grey-40);
+  flex: none;
+  width: 2ch;
+}
+.rowActive .rowNum {
+  color: var(--light);
+}
+
+.rowName {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' var(--wdth-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.rowDot {
+  margin-left: auto;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  opacity: 0;
+  flex: none;
+  align-self: center;
+}
+.rowActive .rowDot {
+  opacity: 1;
+}
+
+/* ---- the button cluster -------------------------------------- */
+
+.cluster {
+  display: flex;
+  align-items: stretch;
+  background: var(--grey-05);
+  --chamfer: 12px;
+}
+
+.util {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  color: var(--grey-60);
+  border-right: 1px solid var(--grey-20);
+  transition: color 0.25s var(--ease-io);
+}
+.util:hover {
+  color: var(--paper);
+}
+.utilOn {
+  color: var(--light);
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  height: 44px;
+  padding: 0 calc(var(--u) * 2);
+  color: var(--paper);
+}
+
+.mainNum {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+}
+
+.mainLabel {
+  color: var(--grey-60);
+}
+
+.caret {
+  width: 9px;
+  height: 9px;
+  border-left: 1px solid currentColor;
+  border-top: 1px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.35s var(--ease-io);
+  margin-left: calc(var(--u) * 0.5);
+}
+.caretOpen {
+  transform: rotate(225deg);
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+}
+
+@media (max-width: 640px) {
+  .mainLabel,
+  .panelHead {
+    display: none;
+  }
+  .panel {
+    min-width: 216px;
+  }
+}

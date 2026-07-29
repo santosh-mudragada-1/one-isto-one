@@ -1,0 +1,135 @@
+/* ============================================================
+   1:1 — design tokens
+   Derived from the logo: a modular square unit (the colon dot)
+   and a 45° chamfer on every corner that could have been sharp.
+   ============================================================ */
+
+:root {
+  /* ---- Surface ------------------------------------------------
+     Deliberately NOT the warm cream (#F4F1EA) that every studio
+     site landed on this year. This paper is unbleached and very
+     slightly cool, so it sits under a machined mark without
+     turning nostalgic. */
+  --ink: #0e0e0e;
+  --ink-raised: #161615;
+  --paper: #edede9;
+  --paper-warm: #f4f4f0;
+
+  /* ---- Greys: four steps, no more ---- */
+  --grey-05: #1c1c1b;
+  --grey-20: #3a3a38;
+  --grey-40: #61615e;
+  --grey-60: #8f8f8a;
+  --grey-80: #b9b9b3;
+
+  /* ---- "Accent" ------------------------------------------------
+     There is no hue. On a near-black field where nothing else
+     exceeds 75% grey, pure white reads as a genuine accent — and
+     it can never date the way a chosen colour does.
+     It appears only at moments of resolution. */
+  --light: #ffffff;
+
+  /* ---- Type -------------------------------------------------
+     Suisse is the intended family and sits first in every stack,
+     so dropping the licensed files into src/fonts/ switches the
+     whole site over with no other change (see FONTS.md).
+
+     Until then Archivo stands in. It is the structurally faithful
+     substitute: one variable superfamily with a real width axis,
+     so display runs condensed and body runs normal from the same
+     skeleton — exactly how Suisse Int'l and Suisse Int'l
+     Condensed relate to each other. */
+  --font-display: 'Anton', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Suisse Intl', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Suisse Intl Mono', 'JetBrains Mono', ui-monospace, 'SF Mono',
+    Menlo, monospace;
+
+  /* Width axis, applied to the Archivo fallback only — Anton has no
+     axes. Headings run condensed; everything else normal width. */
+  --wdth-display: 64;
+  --wdth-body: 100;
+
+  /* Fluid scale. Anton has a tall cap height and sets very tight, so
+     it reads larger than a neutral grotesque at the same size — the
+     display ramp is pulled back a little to compensate. */
+  --t-display: clamp(2.75rem, 7.8vw, 9rem);
+  --t-display-sm: clamp(2rem, 4.6vw, 5rem);
+  --t-lead: clamp(1.05rem, 1.55vw, 1.5rem);
+  --t-body: clamp(0.95rem, 1.05vw, 1.0625rem);
+  --t-label: clamp(0.625rem, 0.72vw, 0.6875rem);
+  --t-nav: clamp(0.75rem, 0.92vw, 0.875rem);
+
+  /* ---- Space: everything is a multiple of the colon square ---- */
+  --u: 8px;
+  --gutter: clamp(1.25rem, 4.2vw, 4.5rem);
+
+  /* ---- Signature detail ---- */
+  --chamfer: 10px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* The one shape rule of the whole system: cut the top-right corner,
+   exactly as the flag of the numeral 1 is cut in the logo.
+   For FILLED surfaces — the clip alone is enough.
+
+   Both utilities are wrapped in :where() so they carry zero
+   specificity. A component class always wins over them, which matters
+   because `.chamfer-box` sets `position` and consumers frequently need
+   `absolute` instead. */
+:where(.chamfer) {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* For OUTLINED surfaces, a clipped `border` leaves the diagonal blank
+   and the box reads as unfinished rather than chamfered. Two stacked
+   chamfers draw the cut edge properly: a filled shape in the line
+   colour, with the surface colour inset 1px on top of it. */
+:where(.chamfer-box) {
+  position: relative;
+  background: currentColor;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer),
+    100% 100%,
+    0 100%
+  );
+}
+
+:where(.chamfer-box)::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--chamfer-fill, var(--ink));
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* Content has to sit above the inset fill. */
+:where(.chamfer-box) > * {
+  position: relative;
+}
+
+/* Small caps utility label. Appears only where something is
+   genuinely being named or measured — never as decoration. */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}

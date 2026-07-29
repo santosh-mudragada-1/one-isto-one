@@ -1,0 +1,33 @@
+/* The supplied wordmark PNGs carry a lot of transparent padding — the
+   glyphs occupy 80.5% of the width and 46.8% of the height, inset 8.99%
+   from the left and 28.4% from the top. These ratios crop that padding
+   away so `--h` is the true cap height of the wordmark, and the mark
+   optically aligns with everything else on the same baseline. */
+.root {
+  --h: 14px;
+  position: relative;
+  display: block;
+  height: var(--h);
+  width: calc(var(--h) * 3.833);
+  overflow: hidden;
+  flex: none;
+}
+
+.img {
+  position: absolute;
+  height: calc(var(--h) * 2.137);
+  width: calc(var(--h) * 4.761);
+  left: calc(var(--h) * -0.428);
+  top: calc(var(--h) * -0.607);
+  max-width: none;
+  transition: opacity 0.45s var(--ease-io);
+}
+
+/* Both marks are always mounted and cross-fade, so a background that
+   changes underneath the nav never catches the logo mid-swap. */
+.on {
+  opacity: 1;
+}
+.off {
+  opacity: 0;
+}

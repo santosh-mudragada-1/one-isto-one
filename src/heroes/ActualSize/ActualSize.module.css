@@ -1,0 +1,167 @@
+.root {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  color: var(--paper);
+  overflow: hidden;
+  cursor: none;
+}
+
+/* ---- the measuring apparatus --------------------------------- */
+
+.dim {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: var(--grey-60);
+}
+
+.dimH {
+  left: var(--gutter);
+  right: var(--gutter);
+  top: calc(var(--u) * 15);
+  height: 12px;
+}
+
+.dimV {
+  flex-direction: column;
+  right: calc(var(--gutter) * 0.42);
+  top: calc(var(--u) * 22);
+  bottom: calc(var(--u) * 15);
+  width: 12px;
+}
+
+/* End ticks: the extension lines of a technical drawing. */
+.cap {
+  background: currentColor;
+  flex: none;
+}
+.dimH .cap {
+  width: 1px;
+  height: 11px;
+  transform-origin: center;
+}
+.dimV .cap {
+  height: 1px;
+  width: 11px;
+}
+
+.rule {
+  background: currentColor;
+  flex: 1;
+}
+.dimH .rule {
+  height: 1px;
+  transform-origin: center;
+}
+.dimV .rule {
+  width: 1px;
+  transform-origin: center;
+}
+
+/* The readout sits ON the rule and knocks a hole in it, exactly as a
+   dimension figure interrupts its own line on a drawing. */
+.readout {
+  position: absolute;
+  background: var(--ink);
+  color: var(--grey-80);
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+}
+.dimH .readout {
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 calc(var(--u) * 1.5);
+}
+.dimV .readout {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  padding: 0 calc(var(--u) * 1.5);
+}
+
+/* ---- content -------------------------------------------------- */
+
+.content {
+  position: absolute;
+  left: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: min(1100px, 78vw);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+  color: var(--grey-60);
+  margin-bottom: calc(var(--u) * 3.5);
+}
+.eyebrowRule {
+  display: block;
+  width: 64px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+}
+
+.head {
+  margin: 0;
+}
+
+.sub {
+  margin-top: calc(var(--u) * 4.5);
+  max-width: 46ch;
+  color: var(--grey-80);
+  font-size: var(--t-lead);
+  line-height: 1.4;
+}
+
+/* ---- crosshair cursor ---------------------------------------- */
+
+.cross {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 6;
+}
+.crossX,
+.crossY {
+  position: absolute;
+  background: var(--grey-40);
+}
+.crossX {
+  left: 0;
+  right: 0;
+  height: 1px;
+  top: 0;
+}
+.crossY {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  left: 0;
+}
+.coords {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: calc(var(--u) * 1) calc(var(--u) * 1.25);
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  color: var(--grey-80);
+  background: var(--ink);
+  white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .root {
+    cursor: auto;
+  }
+  .cross {
+    display: none;
+  }
+}

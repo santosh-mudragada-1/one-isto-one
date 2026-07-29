@@ -1,0 +1,168 @@
+.root {
+  --split: 8%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+/* Two complete, static worlds. Only the clip moves — so this is a
+   reveal, not two panels sliding past each other. */
+.side {
+  position: absolute;
+  inset: 0;
+}
+
+.left {
+  background: var(--ink);
+  color: var(--paper);
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+}
+
+.right {
+  background: var(--paper);
+  color: var(--ink);
+  clip-path: inset(0 0 0 var(--split));
+}
+
+/* ---- the fragmented side ------------------------------------- */
+
+.cell {
+  --chamfer: 7px;
+  position: absolute;
+  padding: calc(var(--u) * 1) calc(var(--u) * 1.5);
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.head {
+  position: absolute;
+  left: var(--gutter);
+  bottom: calc(var(--u) * 13);
+  margin: 0;
+}
+
+/* ---- the whole side ------------------------------------------
+   The same fourteen things, in the same order — but set on one grid,
+   in one colour, at one size, holding still. The argument is that
+   nothing was removed; it was only brought into a system.
+
+   Anchored past 62% so the divider's travel never cuts a word. */
+
+.wholeCol {
+  position: absolute;
+  left: 62%;
+  right: var(--gutter);
+  top: 20%;
+}
+
+.mark {
+  display: block;
+  width: 58px;
+  height: auto;
+  color: var(--ink);
+}
+
+.hair {
+  margin: calc(var(--u) * 3) 0;
+  height: 1px;
+  background: var(--grey-80);
+  transform-origin: left;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: calc(var(--u) * 4);
+  row-gap: calc(var(--u) * 2.25);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  color: var(--grey-40);
+  white-space: nowrap;
+}
+
+.headRight {
+  position: absolute;
+  left: 62%;
+  bottom: calc(var(--u) * 13);
+  margin: 0;
+  color: var(--ink);
+}
+
+/* ---- the divider — which is the colon ------------------------ */
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split);
+  width: 1px;
+  background: var(--grey-40);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.colon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Each square is half in one world and half in the other. The mark
+   does not belong to either side; it is what holds them together. */
+.sq {
+  display: flex;
+  width: 20px;
+  height: 20px;
+}
+.half {
+  width: 10px;
+  height: 20px;
+}
+.halfL {
+  background: var(--paper);
+}
+.halfR {
+  background: var(--ink);
+}
+
+/* ---- footer ---------------------------------------------------- */
+
+.footLeft {
+  position: absolute;
+  left: var(--gutter);
+  bottom: calc(var(--u) * 4.5);
+  color: var(--grey-60);
+  z-index: 6;
+}
+
+.ratioReadout {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 4.5);
+  transform: translateX(-50%);
+  color: var(--grey-40);
+  z-index: 6;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .list {
+    grid-template-columns: 1fr;
+    row-gap: calc(var(--u) * 1.5);
+  }
+  .wholeCol {
+    top: 17%;
+  }
+}

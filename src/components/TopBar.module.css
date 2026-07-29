@@ -1,0 +1,108 @@
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--u) * 5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.dark {
+  --surface: var(--ink);
+  color: var(--paper);
+}
+.light {
+  --surface: var(--paper);
+  color: var(--ink);
+}
+
+.logoLink {
+  display: block;
+  pointer-events: auto;
+  opacity: 0.92;
+  transition: opacity 0.35s var(--ease-io);
+}
+.logoLink:hover {
+  opacity: 1;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 2.6vw, 3rem);
+  pointer-events: auto;
+}
+
+.link {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--t-nav);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: currentColor;
+  opacity: 0.6;
+  padding-bottom: 5px;
+  transition: opacity 0.35s var(--ease-io);
+}
+.link:hover {
+  opacity: 1;
+}
+
+/* Underline draws in from the left rather than fading — a rule being
+   ruled, not a link lighting up. */
+.rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+.link:hover .rule {
+  transform: scaleX(1);
+}
+
+/* The site's one real call to action, so it earns the only outlined
+   box in the chrome — and it wears the 45° cut from the mark. */
+.cta {
+  --chamfer: 9px;
+  --chamfer-fill: var(--surface);
+  display: block;
+  padding: calc(var(--u) * 1.25) calc(var(--u) * 2.25);
+  font-family: var(--font-mono);
+  font-size: var(--t-nav);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: currentColor;
+  transition: color 0.35s var(--ease-io);
+}
+
+.cta::before {
+  transition: background-color 0.35s var(--ease-io);
+}
+.cta:hover::before {
+  background: transparent;
+}
+.cta:hover > span {
+  color: var(--surface);
+}
+
+.cta > span {
+  transition: color 0.35s var(--ease-io);
+}
+
+@media (max-width: 720px) {
+  .link {
+    display: none;
+  }
+}

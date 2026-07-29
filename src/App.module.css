@@ -1,0 +1,30 @@
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Concept-to-concept transition. Kept short and mechanical so it reads
+   as a plate changing, not as a page load. */
+.curtain {
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  z-index: 90;
+  display: none;
+  place-items: center;
+  transform: scaleY(0);
+}
+
+.curtainInner {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 2);
+  color: var(--grey-40);
+}
+
+.curtainNum {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+}
