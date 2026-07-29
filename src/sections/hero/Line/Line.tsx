@@ -27,7 +27,7 @@ const DRAW = 3.1
  * stopping. In the full build this is the same path all the way down
  * the site — the transition between sections is that there isn't one.
  */
-export default function Line() {
+export default function Line({ flow = false }: { flow?: boolean }) {
   const root = useGsap<HTMLDivElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
@@ -101,7 +101,10 @@ export default function Line() {
   }, [])
 
   return (
-    <div className={styles.root} ref={root}>
+    <div
+      className={`${styles.root} ${flow ? styles.rootFlow : ''}`}
+      ref={root}
+    >
       <Chrome tone="dark" showFooter={false} />
 
       <svg

@@ -6,6 +6,15 @@
   overflow: hidden;
 }
 
+/* Same hero, sitting in document flow instead of filling a review
+   stage — used when it is assembled with the sections that follow it. */
+.rootFlow {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100dvh;
+}
+
 .svg {
   position: absolute;
   inset: 0;

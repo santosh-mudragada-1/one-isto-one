@@ -33,10 +33,14 @@
 
 /* ---- the object ------------------------------------------------- */
 
+/* Height is a plain 32vh rather than a clamp so the object's base
+   line lands at exactly 66vh — which is where the spine crosses. A
+   clamp would break that relationship at extreme viewports. */
 .stage {
   position: relative;
   width: min(1020px, 86vw);
-  height: clamp(200px, 32vh, 360px);
+  height: 32vh;
+  min-height: 190px;
 }
 
 .panel {
@@ -70,6 +74,20 @@
   z-index: 3;
 }
 
+/* Each join reaches down past the base and cuts the customer's path.
+   It has to be a separate element, not a taller seam: below the object
+   the ground is ink, so an ink join would be invisible there. */
+.tick {
+  position: absolute;
+  top: 100%;
+  height: 34px;
+  width: 1px;
+  background: var(--grey-40);
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 3;
+}
+
 .seamNote {
   position: absolute;
   bottom: calc(100% + var(--u) * 1.5);
@@ -88,19 +106,17 @@
 
 /* Names what the line is, at the moment it has finished crossing —
    otherwise the stroke reads as decoration rather than as a person. */
+/* Clears both the crossing and the joins that reach down past it, and
+   sits above the join that opens so it is never half-painted over. */
 .crossNote {
   position: absolute;
   left: 0;
-  top: calc(100% + var(--u) * 5);
+  top: calc(100% + var(--u) * 9);
   color: var(--grey-60);
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.8s var(--ease-io);
+  z-index: 8;
   font-size: 0.5625rem;
-}
-
-.crossNoteOn {
-  opacity: 1;
 }
 
 .close {

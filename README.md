@@ -18,6 +18,7 @@ npm run dev      # http://localhost:5173
 
 | Key       | Does                                   |
 | --------- | -------------------------------------- |
+| `0`       | the assembled page (Hero → The Problem) |
 | `1`–`5`   | pick a version inside the current section |
 | `↑` / `↓` | move between sections                  |
 | `R`       | replay the current version             |
@@ -63,17 +64,36 @@ customer.** It never stops — which is the entire reason the gaps in Section 02
 cost anything: the business's work is discontinuous, the person moving through
 it is not.
 
-[`Spine`](src/components/Spine.tsx) draws one stretch of it per section,
-scrubbed by that section's own scroll. It renders `position: fixed` so a sticky
-pin can never clip it, and `mix-blend-mode: difference` so it stays legible over
-the ink ground and over paper objects without being recoloured.
+[`Spine`](src/components/Spine.tsx) draws one stretch per section, scrubbed by
+that section's own scroll. In Section 02 it enters at the x the Hero left it on
+and runs along the **base** of the object — crossing the base still crosses
+every join, without cutting six panels into twelve — then survives the blackout
+and carries on down into Section 03. Each join reaches past the base as a
+separate `.tick` element and cuts the path; it cannot just be a taller seam,
+because below the object the ground is ink and an ink join would be invisible.
 
-In Section 02 it drops in at the x the Hero left it on, crosses all six panels
-and all five joins without deviating, survives the blackout at the end, and
-carries on down into Section 03.
+Three things that are load-bearing, not incidental:
 
-**Trap:** `html` is `height: 100%`, so it measures one viewport and is useless
-as a ScrollTrigger trigger. Spine uses its nearest ancestor `<section>`.
+- **`position: sticky`, not `fixed`.** Fixed hangs over whichever section is on
+  screen, and cannot travel in with a section that is still arriving — which is
+  exactly where the line has to stay unbroken.
+- **`start: 'top bottom'`.** Starting once the section has topped out leaves a
+  visible break at the join, because the previous stroke has already left the
+  bottom of the screen.
+- **The trigger is the nearest `<section>`.** `html` is `height: 100%`, so as a
+  trigger it measures one viewport, start and end collapse, and the stroke never
+  advances at all.
+
+`mix-blend-mode: difference` keeps it legible over the ink ground and over the
+paper object without ever being recoloured.
+
+## The page
+
+[`Assembled`](src/sections/Assembled.tsx) renders the chosen directions in
+sequence as one continuous scroll — the default view, and the only way to judge
+whether the spine actually carries. The Hero's stroke leaves at x=84 and Section
+02's enters at x=84, so the handoff is invisible. Sections 03–06 append here as
+they are built.
 
 ## How it's put together
 

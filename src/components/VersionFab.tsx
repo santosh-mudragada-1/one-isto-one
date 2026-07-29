@@ -4,16 +4,20 @@ import { SECTIONS } from '../sections'
 import styles from './VersionFab.module.css'
 
 type Props = {
+  assembled: boolean
   section: number
   version: number
   onSelect: (section: number, version: number) => void
+  onSelectAssembled: () => void
   onReplay: () => void
 }
 
 export default function VersionFab({
+  assembled,
   section,
   version,
   onSelect,
+  onSelectAssembled,
   onReplay,
 }: Props) {
   const [open, setOpen] = useState(false)
@@ -54,7 +58,9 @@ export default function VersionFab({
       const target = e.target as HTMLElement | null
       if (target && /^(INPUT|TEXTAREA)$/.test(target.tagName)) return
 
-      if (/^[0-9]$/.test(e.key)) {
+      if (e.key === '0') {
+        onSelectAssembled()
+      } else if (/^[0-9]$/.test(e.key)) {
         const i = SECTIONS[section].versions.findIndex(
           (v) => Number(v.num) === Number(e.key)
         )
@@ -73,7 +79,7 @@ export default function VersionFab({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [section, version, onSelect, onReplay])
+  }, [section, version, onSelect, onSelectAssembled, onReplay])
 
   const current = SECTIONS[section]
   const currentVersion = current.versions[version]
@@ -86,6 +92,28 @@ export default function VersionFab({
         role="listbox"
         aria-label="Section and version"
       >
+        {/* The chosen directions, in sequence, as one scroll. */}
+        <div className={styles.group}>
+          <div className={`${styles.groupHead} label`}>
+            <span>The page</span>
+            <span>Assembled</span>
+          </div>
+          <button
+            className={`${styles.row} ${assembled ? styles.rowActive : ''}`}
+            role="option"
+            aria-selected={assembled}
+            title="The finalised sections in sequence, with one continuous line"
+            onClick={() => {
+              onSelectAssembled()
+              setOpen(false)
+            }}
+          >
+            <span className={styles.rowNum}>00</span>
+            <span className={styles.rowName}>Hero → The Problem</span>
+            <span className={styles.rowDot} />
+          </button>
+        </div>
+
         {SECTIONS.map((s, si) => (
           <div key={s.id} className={styles.group}>
             <div className={`${styles.groupHead} label`}>
@@ -95,7 +123,7 @@ export default function VersionFab({
             <span className={styles.groupIntent}>{s.intent}</span>
 
             {s.versions.map((v, vi) => {
-              const active = si === section && vi === version
+              const active = !assembled && si === section && vi === version
               return (
                 <button
                   key={v.id}
@@ -147,10 +175,10 @@ export default function VersionFab({
           aria-label="Choose section and version"
         >
           <span className={styles.mainNum}>
-            {current.num} · {currentVersion.num}
+            {assembled ? '00' : `${current.num} · ${currentVersion.num}`}
           </span>
           <span className={`${styles.mainLabel} label`}>
-            {currentVersion.name}
+            {assembled ? 'The page' : currentVersion.name}
           </span>
           <span className={`${styles.caret} ${open ? styles.caretOpen : ''}`} />
         </button>

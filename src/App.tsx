@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from './lib/gsap'
 import VersionFab from './components/VersionFab'
+import Assembled from './sections/Assembled'
 import { SECTIONS, defaultPosition } from './sections'
 import styles from './App.module.css'
 
 const START = defaultPosition()
 
 export default function App() {
+  /** The assembled page is the deliverable; the single-version view is
+   *  a review tool for comparing directions. */
+  const [assembled, setAssembled] = useState(true)
   const [section, setSection] = useState(START.section)
   const [version, setVersion] = useState(START.version)
-  /** Bumping this remounts the version, replaying it from frame one. */
+  /** Bumping this remounts, replaying from frame one. */
   const [take, setTake] = useState(0)
 
   const curtain = useRef<HTMLDivElement | null>(null)
@@ -18,18 +22,19 @@ export default function App() {
 
   const current = SECTIONS[section]
   const currentVersion = current.versions[version]
+  const scrolls = assembled || currentVersion.scrolls
 
-  /* A scroll-driven version starts at the top with its triggers freshly
-     measured — otherwise it inherits the previous version's scroll
-     position and starts halfway through itself. */
+  /* Anything scroll-driven starts at the top with its triggers freshly
+     measured, or it inherits the previous view's scroll position and
+     begins halfway through itself. */
   useEffect(() => {
     window.scrollTo(0, 0)
     const id = window.setTimeout(() => ScrollTrigger.refresh(), 60)
     return () => window.clearTimeout(id)
-  }, [section, version, take])
+  }, [assembled, section, version, take])
 
   /** Cover, swap, uncover. */
-  const wipe = useCallback((apply: () => void, s: number, v: number) => {
+  const wipe = useCallback((apply: () => void, title: string, num: string) => {
     const el = curtain.current
     if (!el || prefersReducedMotion()) {
       apply()
@@ -38,11 +43,10 @@ export default function App() {
     if (busy.current) return
     busy.current = true
 
-    const target = SECTIONS[s].versions[v]
     if (label.current) {
       label.current.innerHTML =
-        `<span class="${styles.curtainNum}">${SECTIONS[s].num} — ${target.num}</span>` +
-        `<span class="label">${target.name}</span>`
+        `<span class="${styles.curtainNum}">${num}</span>` +
+        `<span class="label">${title}</span>`
     }
 
     gsap
@@ -58,29 +62,46 @@ export default function App() {
   const select = useCallback(
     (s: number, v: number) => {
       const clampedV = Math.min(v, SECTIONS[s].versions.length - 1)
-      if (s === section && clampedV === version) {
-        wipe(() => setTake((t) => t + 1), s, clampedV)
-        return
-      }
-      wipe(() => {
-        setSection(s)
-        setVersion(clampedV)
-      }, s, clampedV)
+      const target = SECTIONS[s].versions[clampedV]
+      const same = !assembled && s === section && clampedV === version
+      wipe(
+        () => {
+          if (same) setTake((t) => t + 1)
+          setAssembled(false)
+          setSection(s)
+          setVersion(clampedV)
+        },
+        target.name,
+        `${SECTIONS[s].num} · ${target.num}`
+      )
     },
-    [section, version, wipe]
+    [assembled, section, version, wipe]
   )
 
-  const replay = useCallback(() => setTake((t) => t + 1), [])
+  const selectAssembled = useCallback(() => {
+    wipe(
+      () => {
+        if (assembled) setTake((t) => t + 1)
+        setAssembled(true)
+      },
+      'Hero → The Problem',
+      'The page'
+    )
+  }, [assembled, wipe])
 
-  const { Component } = currentVersion
+  const replay = useCallback(() => setTake((t) => t + 1), [])
 
   return (
     <>
       <main className={styles.stage}>
-        <Component key={`${section}-${version}-${take}`} />
+        {assembled ? (
+          <Assembled key={`page-${take}`} />
+        ) : (
+          <currentVersion.Component key={`${section}-${version}-${take}`} />
+        )}
       </main>
 
-      {currentVersion.scrolls && (
+      {scrolls && (
         <span className={`${styles.scrollHint} label`} aria-hidden="true">
           Scroll
           <span className={styles.scrollHintTick} />
@@ -92,9 +113,11 @@ export default function App() {
       </div>
 
       <VersionFab
+        assembled={assembled}
         section={section}
         version={version}
         onSelect={select}
+        onSelectAssembled={selectAssembled}
         onReplay={replay}
       />
     </>

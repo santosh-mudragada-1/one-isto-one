@@ -1,15 +1,14 @@
-import { useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { useGsap } from '../../../lib/useGsap'
 import Spine from '../../../components/Spine'
 import styles from './Seams.module.css'
 
 /* The customer's path across this section. It enters at the x the Hero
-   left it on, drops to the object's centre line, crosses every panel
-   and every join without deviating, and carries on down into 03.
-   The object is 288 tall and centred, so y=450 runs straight through
-   the middle of all six panels. */
-const SPINE = 'M 84 -60 V 450 H 1356 V 960'
+   left it on and runs along the BASE of the object rather than through
+   it — crossing the base still crosses every join, without cutting six
+   panels into twelve. The object is 32vh and centred, so its base sits
+   at 66vh, which is y=594 in this stretched 900-unit space. */
+const SPINE = 'M 84 -60 V 594 H 1356 V 960'
 
 /* Six almost-identical off-whites. Every one of them was signed off as
    correct, and no two of them match — which is how this actually fails
@@ -38,8 +37,6 @@ const OPENS = 2
  * which is precisely what happens to a customer.
  */
 export default function Seams() {
-  const [crossed, setCrossed] = useState(false)
-
   const root = useGsap<HTMLElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
@@ -47,12 +44,14 @@ export default function Seams() {
     const panels = q(`.${styles.panel}`) as HTMLElement[]
     const names = q(`.${styles.panelName}`) as HTMLElement[]
     const seams = q(`.${styles.seam}`) as HTMLElement[]
+    const ticks = q(`.${styles.tick}`) as HTMLElement[]
     const notes = q(`.${styles.seamNote}`) as HTMLElement[]
+    const crossNote = q(`.${styles.crossNote}`)
     const head = q(`.${styles.head}`)
     const close = q(`.${styles.close}`)
 
     if (reduced) {
-      gsap.set([seams, notes, head], { opacity: 1 })
+      gsap.set([seams, ticks, notes, crossNote, head], { opacity: 1 })
       return
     }
 
@@ -80,11 +79,14 @@ export default function Seams() {
       tl.to(p, { x: 0, duration: 1.5, ease: 'power3.inOut' }, 2.6)
     })
     tl.to(names, { opacity: 0, duration: 0.5 }, 2.6)
-      .to(seams, { opacity: 1, duration: 0.5, stagger: 0.08 }, 3.7)
+      .to([...seams, ...ticks], { opacity: 1, duration: 0.5, stagger: 0.04 }, 3.7)
       .to(notes, { opacity: 1, duration: 0.5, stagger: 0.08 }, 3.9)
+      /* Names what the line is, once it has finished crossing —
+         otherwise the stroke reads as decoration, not as a person. */
+      .to(crossNote, { opacity: 1, duration: 0.6 }, 4.3)
 
     /* One join opens until it is the only thing on screen. */
-    tl.to([notes, head], { opacity: 0, duration: 0.4 }, 5.4)
+    tl.to([notes, ticks, crossNote, head], { opacity: 0, duration: 0.4 }, 5.4)
       /* The join opens past the edges of the frame in both axes, so it
          becomes the only thing on screen rather than a wide bar with
          the object still showing around it. */
@@ -109,7 +111,7 @@ export default function Seams() {
   return (
     <section className={styles.root} ref={root}>
       {/* The customer, crossing every join without slowing down. */}
-      <Spine d={SPINE} onReach={{ at: 0.56, run: () => setCrossed(true) }} />
+      <Spine d={SPINE} />
 
       <div className={styles.pin}>
         <span className={`${styles.eyebrow} label`}>02 — The problem</span>
@@ -129,18 +131,22 @@ export default function Seams() {
           ))}
 
           {SEAMS.map((s, i) => (
-            <span
-              key={s}
-              className={`${styles.seam} ${i === OPENS ? styles.seamWide : ''}`}
-              style={{ left: `${(i + 1) * 16.6667}%` }}
-            >
-              <span className={`${styles.seamNote} label`}>{s}</span>
+            <span key={s}>
+              <span
+                className={`${styles.seam} ${i === OPENS ? styles.seamWide : ''}`}
+                style={{ left: `${(i + 1) * 16.6667}%` }}
+              >
+                <span className={`${styles.seamNote} label`}>{s}</span>
+              </span>
+              {/* the same join, cutting the path below */}
+              <span
+                className={styles.tick}
+                style={{ left: `${(i + 1) * 16.6667}%` }}
+              />
             </span>
           ))}
 
-          <span
-            className={`${styles.crossNote} label ${crossed ? styles.crossNoteOn : ''}`}
-          >
+          <span className={`${styles.crossNote} label`}>
             Your customer crosses every one of these without stopping
           </span>
         </div>
