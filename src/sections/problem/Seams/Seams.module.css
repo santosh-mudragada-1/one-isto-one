@@ -3,6 +3,12 @@
   height: 400vh;
   background: var(--ink);
   color: var(--paper);
+
+  /* Type starts to the RIGHT of the spine, never on top of it. The
+     stroke runs down at 5.8333% of the viewport, so text set from the
+     plain gutter is sliced through by it. Same offset the Hero's band
+     uses, so both sections hang off the line identically. */
+  --content-left: calc(5.8333% + clamp(1.5rem, 3.2vw, 3.5rem));
 }
 
 .pin {
@@ -17,14 +23,14 @@
 
 .eyebrow {
   position: absolute;
-  left: var(--gutter);
+  left: var(--content-left);
   top: calc(var(--u) * 6);
   color: var(--grey-40);
 }
 
 .head {
   position: absolute;
-  left: var(--gutter);
+  left: var(--content-left);
   top: calc(var(--u) * 11);
   margin: 0;
   max-width: 14ch;
@@ -121,7 +127,7 @@
 
 .close {
   position: absolute;
-  left: var(--gutter);
+  left: var(--content-left);
   right: var(--gutter);
   top: 50%;
   transform: translateY(-50%);
