@@ -86,6 +86,23 @@
   z-index: 6;
 }
 
+/* Names what the line is, at the moment it has finished crossing —
+   otherwise the stroke reads as decoration rather than as a person. */
+.crossNote {
+  position: absolute;
+  left: 0;
+  top: calc(100% + var(--u) * 5);
+  color: var(--grey-60);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-io);
+  font-size: 0.5625rem;
+}
+
+.crossNoteOn {
+  opacity: 1;
+}
+
 .close {
   position: absolute;
   left: var(--gutter);

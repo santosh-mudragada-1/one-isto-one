@@ -1,6 +1,15 @@
+import { useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { useGsap } from '../../../lib/useGsap'
+import Spine from '../../../components/Spine'
 import styles from './Seams.module.css'
+
+/* The customer's path across this section. It enters at the x the Hero
+   left it on, drops to the object's centre line, crosses every panel
+   and every join without deviating, and carries on down into 03.
+   The object is 288 tall and centred, so y=450 runs straight through
+   the middle of all six panels. */
+const SPINE = 'M 84 -60 V 450 H 1356 V 960'
 
 /* Six almost-identical off-whites. Every one of them was signed off as
    correct, and no two of them match — which is how this actually fails
@@ -29,6 +38,8 @@ const OPENS = 2
  * which is precisely what happens to a customer.
  */
 export default function Seams() {
+  const [crossed, setCrossed] = useState(false)
+
   const root = useGsap<HTMLElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
@@ -97,6 +108,9 @@ export default function Seams() {
 
   return (
     <section className={styles.root} ref={root}>
+      {/* The customer, crossing every join without slowing down. */}
+      <Spine d={SPINE} onReach={{ at: 0.56, run: () => setCrossed(true) }} />
+
       <div className={styles.pin}>
         <span className={`${styles.eyebrow} label`}>02 — The problem</span>
         <h2 className={`display display--sm ${styles.head}`}>
@@ -123,6 +137,12 @@ export default function Seams() {
               <span className={`${styles.seamNote} label`}>{s}</span>
             </span>
           ))}
+
+          <span
+            className={`${styles.crossNote} label ${crossed ? styles.crossNoteOn : ''}`}
+          >
+            Your customer crosses every one of these without stopping
+          </span>
         </div>
 
         <h3 className={`display display--sm ${styles.close}`}>

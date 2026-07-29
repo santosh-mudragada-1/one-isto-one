@@ -48,15 +48,32 @@ Where the Hero is **simultaneity**, this is **sequence** — the pieces did not
 arrive together. Every version is scroll-driven, and none of them resolve;
 resolution belongs to Section 03.
 
-| #   | Name               | Signature interaction                                          |
-| --- | ------------------ | -------------------------------------------------------------- |
-| 01  | Six Calendars      | drag one customer across two years of separate decisions        |
-| 02  | The Relay          | quality rises and coherence drains in the same motion           |
-| 03  | The Rewrite        | six defensible edits, then the original returns underneath      |
-| 04  | The Sign-Off Sheet | the row nobody signed — and the form refuses your signature     |
-| 05  | The Seams          | the joins stay visible after the pieces close                   |
+| #   | Name               | Signature interaction                                       | |
+| --- | ------------------ | ----------------------------------------------------------- | --- |
+| 01  | Six Calendars      | drag one customer across two years of separate decisions     | reference |
+| 02  | The Relay          | quality rises and coherence drains in the same motion        | reference |
+| 03  | The Rewrite        | six defensible edits, then the original returns underneath   | reference |
+| 04  | The Sign-Off Sheet | the row nobody signed — and the form refuses your signature  | reference |
+| 05  | The Seams          | the joins stay visible, and the line crosses every one       | **final** |
 
-One version per section ships. The rest get deleted once a direction is chosen.
+## The spine
+
+Hero 04's stroke is not decoration and not a scroll indicator. **It is the
+customer.** It never stops — which is the entire reason the gaps in Section 02
+cost anything: the business's work is discontinuous, the person moving through
+it is not.
+
+[`Spine`](src/components/Spine.tsx) draws one stretch of it per section,
+scrubbed by that section's own scroll. It renders `position: fixed` so a sticky
+pin can never clip it, and `mix-blend-mode: difference` so it stays legible over
+the ink ground and over paper objects without being recoloured.
+
+In Section 02 it drops in at the x the Hero left it on, crosses all six panels
+and all five joins without deviating, survives the blackout at the end, and
+carries on down into Section 03.
+
+**Trap:** `html` is `height: 100%`, so it measures one viewport and is useless
+as a ScrollTrigger trigger. Spine uses its nearest ancestor `<section>`.
 
 ## How it's put together
 
