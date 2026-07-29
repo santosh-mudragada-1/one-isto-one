@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, prefersReducedMotion } from '../lib/gsap'
-import { sfx, setSound, soundEnabled } from '../lib/sound'
 import { SECTIONS } from '../sections'
 import styles from './VersionFab.module.css'
 
@@ -18,7 +17,6 @@ export default function VersionFab({
   onReplay,
 }: Props) {
   const [open, setOpen] = useState(false)
-  const [sound, setSoundState] = useState(soundEnabled())
   const panelRef = useRef<HTMLDivElement | null>(null)
 
   /* Open / close. The panel is display:none while closed so it never
@@ -49,45 +47,33 @@ export default function VersionFab({
     }
   }, [open])
 
-  /* Keyboard: digits pick a version inside the current section, arrows
-     move between sections. */
+  /* Digits match the number printed on the row rather than its position,
+     so `4` still selects 04 after 02 and 03 were deleted. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
       if (target && /^(INPUT|TEXTAREA)$/.test(target.tagName)) return
 
-      const versions = SECTIONS[section].versions
-
-      if (e.key >= '1' && e.key <= String(versions.length)) {
-        onSelect(section, Number(e.key) - 1)
-        sfx.click()
+      if (/^[0-9]$/.test(e.key)) {
+        const i = SECTIONS[section].versions.findIndex(
+          (v) => Number(v.num) === Number(e.key)
+        )
+        if (i >= 0) onSelect(section, i)
       } else if (e.key === 'ArrowDown' || e.key === ']') {
         e.preventDefault()
         onSelect(Math.min(section + 1, SECTIONS.length - 1), version)
-        sfx.click()
       } else if (e.key === 'ArrowUp' || e.key === '[') {
         e.preventDefault()
         onSelect(Math.max(section - 1, 0), version)
-        sfx.click()
       } else if (e.key.toLowerCase() === 'r') {
         onReplay()
-      } else if (e.key.toLowerCase() === 's') {
-        toggleSound()
       } else if (e.key === 'Escape') {
         setOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [section, version, onSelect, onReplay])
-
-  function toggleSound() {
-    const next = !soundEnabled()
-    setSound(next)
-    setSoundState(next)
-    if (next) sfx.click()
-  }
 
   const current = SECTIONS[section]
   const currentVersion = current.versions[version]
@@ -117,15 +103,22 @@ export default function VersionFab({
                   role="option"
                   aria-selected={active}
                   title={v.signature}
-                  onMouseEnter={() => sfx.hover()}
                   onClick={() => {
                     onSelect(si, vi)
-                    sfx.click()
                     setOpen(false)
                   }}
                 >
                   <span className={styles.rowNum}>{v.num}</span>
                   <span className={styles.rowName}>{v.name}</span>
+                  {v.status && (
+                    <span
+                      className={`${styles.chip} ${
+                        v.status === 'final' ? styles.chipFinal : ''
+                      }`}
+                    >
+                      {v.status === 'final' ? 'Final' : 'Ref'}
+                    </span>
+                  )}
                   <span className={styles.rowDot} />
                 </button>
               )
@@ -137,11 +130,7 @@ export default function VersionFab({
       <div className={`${styles.cluster} chamfer`}>
         <button
           className={styles.util}
-          onClick={() => {
-            onReplay()
-            sfx.click()
-          }}
-          onMouseEnter={() => sfx.hover()}
+          onClick={onReplay}
           aria-label="Replay this version"
           title="Replay (R)"
         >
@@ -152,33 +141,8 @@ export default function VersionFab({
         </button>
 
         <button
-          className={`${styles.util} ${sound ? styles.utilOn : ''}`}
-          onClick={toggleSound}
-          onMouseEnter={() => sfx.hover()}
-          aria-label={sound ? 'Turn sound off' : 'Turn sound on'}
-          aria-pressed={sound}
-          title="Sound (S)"
-        >
-          <svg className={styles.icon} viewBox="0 0 24 24">
-            <path d="M4 9v6h4l5 4V5L8 9H4z" />
-            {sound ? (
-              <>
-                <path d="M16.5 8.5a5 5 0 0 1 0 7" />
-                <path d="M19 6a8.5 8.5 0 0 1 0 12" />
-              </>
-            ) : (
-              <path d="M17 9.5l4 5m0-5l-4 5" />
-            )}
-          </svg>
-        </button>
-
-        <button
           className={styles.main}
-          onClick={() => {
-            setOpen((v) => !v)
-            sfx.click()
-          }}
-          onMouseEnter={() => sfx.hover()}
+          onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="Choose section and version"
         >

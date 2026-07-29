@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import styles from './Relay.module.css'
 
@@ -75,7 +74,6 @@ export default function Relay() {
       }
       tl.add(() => {
         setFilled(i + 1)
-        sfx.snap()
       }, i)
       tl.to(names[i], { color: '#edede9', duration: 0.4 }, i)
       tl.to(names[i], { color: '#61615e', duration: 0.6 }, i + 0.75)

@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from './lib/gsap'
 import VersionFab from './components/VersionFab'
-import { SECTIONS } from './sections'
+import { SECTIONS, defaultPosition } from './sections'
 import styles from './App.module.css'
 
+const START = defaultPosition()
+
 export default function App() {
-  const [section, setSection] = useState(0)
-  const [version, setVersion] = useState(0)
+  const [section, setSection] = useState(START.section)
+  const [version, setVersion] = useState(START.version)
   /** Bumping this remounts the version, replaying it from frame one. */
   const [take, setTake] = useState(0)
 

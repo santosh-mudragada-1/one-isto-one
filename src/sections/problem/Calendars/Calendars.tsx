@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import styles from './Calendars.module.css'
 
@@ -86,7 +85,6 @@ export default function Calendars() {
       .to(readout, { opacity: 1, duration: 0.6 }, 4.4)
       .add(() => {
         live.current = true
-        sfx.lock()
       }, 4.4)
 
       /* Ends unresolved: the schedule goes, the question stays. */
@@ -115,7 +113,6 @@ export default function Calendars() {
     dragging.current = true
     ;(e.target as HTMLElement).setPointerCapture?.(e.pointerId)
     setFromPointer(e.clientX)
-    sfx.snap()
   }
   const onMove = (e: React.PointerEvent) => {
     if (!dragging.current) return

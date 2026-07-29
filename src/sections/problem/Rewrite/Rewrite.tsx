@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import styles from './Rewrite.module.css'
 
@@ -92,13 +91,11 @@ export default function Rewrite() {
         )
         .add(() => {
           setActive(i)
-          sfx.slide()
         }, i - 1 + 0.7)
     })
 
     /* The owner's sentence comes back and stands next to the result. */
     tl.to(origin, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 5.4)
-      .add(() => sfx.lock(), 5.4)
       .to([beats[BEATS.length - 1], origin], { opacity: 0, duration: 0.6 }, 7.0)
       .to(close, { opacity: 1, duration: 0.7 }, 7.4)
 

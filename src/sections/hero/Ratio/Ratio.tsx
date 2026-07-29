@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { gsap, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import Mark from '../../../components/Mark'
 import TopBar from '../../../components/TopBar'
@@ -77,7 +76,6 @@ export default function Ratio() {
       duration: 1.75,
       ease: 'power3.inOut',
       onUpdate: apply,
-      onComplete: () => sfx.lock(),
     })
 
     /* Fragments arrive scattered… */

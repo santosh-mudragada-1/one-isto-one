@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { gsap, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import Chrome from '../../../components/Chrome'
 import styles from './ActualSize.module.css'
@@ -42,7 +41,6 @@ export default function ActualSize() {
         ease: 'power2.out',
         snap: { w: 1, h: 1 },
         onUpdate: paint,
-        onComplete: () => sfx.snap(),
       })
     }
 
@@ -126,7 +124,6 @@ export default function ActualSize() {
         0.45
       )
       .from(q(`.${styles.sub}`), { opacity: 0, y: 14, duration: 0.8 }, 1.05)
-      .add(() => sfx.slide(), 0.35)
 
     return () => {
       window.removeEventListener('resize', onResize)

@@ -21,23 +21,24 @@ npm run dev      # http://localhost:5173
 | `1`–`5`   | pick a version inside the current section |
 | `↑` / `↓` | move between sections                  |
 | `R`       | replay the current version             |
-| `S`       | sound on / off                         |
 | `Esc`     | close the switcher                     |
 
-Sound is **off by default**. Concept 03's registration lock is the one worth
-turning it on for.
+Sound is **currently removed** — every cue was stripped on 30 Jul 2026 so they
+can be placed one at a time where they earn their place. The synth engine is
+kept intact and unwired at [`src/lib/sound.ts`](src/lib/sound.ts).
 
 ## Section 01 — Hero
 
 _Businesses are experienced as one, yet built in pieces._
 
-| #   | Name              | Signature interaction                                        |
-| --- | ----------------- | ------------------------------------------------------------ |
-| 01  | Actual Size       | the page measures itself — the figures are real               |
-| 02  | The Sentence      | the changing word physically pushes the sentence along        |
-| 03  | Registration      | two impressions lock into register; the cursor un-locks them  |
-| 04  | The Unbroken Line | one stroke that never lifts                                   |
-| 05  | The Living Ratio  | the colon splits the screen and always returns to 1:1         |
+| #   | Name              | Signature interaction                                  | |
+| --- | ----------------- | ------------------------------------------------------ | --- |
+| 01  | Actual Size       | the page measures itself — the figures are real         | reference |
+| 04  | The Unbroken Line | one stroke that never lifts                             | **final** |
+| 05  | The Living Ratio  | the colon splits the screen and always returns to 1:1   | reference |
+
+02 The Sentence and 03 Registration were deleted. Numbers are kept stable, so
+`4` still selects 04.
 
 ## Section 02 — The Problem
 

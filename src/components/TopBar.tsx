@@ -1,4 +1,3 @@
-import { sfx } from '../lib/sound'
 import NavLogo, { type Tone } from './NavLogo'
 import styles from './TopBar.module.css'
 
@@ -24,8 +23,6 @@ export default function TopBar({ tone = 'dark', logoTone }: Props) {
         className={styles.logoLink}
         href="#top"
         aria-label="one to one — home"
-        onPointerEnter={() => sfx.hover()}
-        onClick={() => sfx.click()}
       >
         <NavLogo tone={logoTone ?? tone} height={20} />
       </a>
@@ -36,8 +33,6 @@ export default function TopBar({ tone = 'dark', logoTone }: Props) {
             key={l.href}
             className={styles.link}
             href={l.href}
-            onPointerEnter={() => sfx.hover()}
-            onClick={() => sfx.click()}
           >
             {l.label}
             <span className={styles.rule} />
@@ -47,8 +42,6 @@ export default function TopBar({ tone = 'dark', logoTone }: Props) {
         <a
           className={`${styles.cta} chamfer-box`}
           href="#contact"
-          onPointerEnter={() => sfx.hover()}
-          onClick={() => sfx.click()}
         >
           <span>Start a conversation</span>
         </a>

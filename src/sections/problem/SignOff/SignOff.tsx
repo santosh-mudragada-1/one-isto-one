@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import styles from './SignOff.module.css'
 
@@ -66,14 +65,12 @@ export default function SignOff() {
           { color: '#61615e', duration: 0.7 },
           i * 0.8
         )
-        .add(() => sfx.snap(), i * 0.8)
     })
 
     /* And then the row that was never anybody's job. */
     tl.to(open, { opacity: 1, duration: 0.6, ease: 'power3.out' }, 5.1)
       .add(() => {
         armed.current = true
-        sfx.lock()
       }, 5.1)
 
     /* It waits. Nothing signs it. */
@@ -109,7 +106,6 @@ export default function SignOff() {
   const trySign = () => {
     if (!armed.current) return
     setRefused(true)
-    sfx.click()
 
     const el = boxRef.current
     if (el && !prefersReducedMotion()) {
@@ -170,7 +166,6 @@ export default function SignOff() {
                 ref={boxRef}
                 className={`${styles.box} chamfer`}
                 onClick={trySign}
-                onMouseEnter={() => sfx.hover()}
                 aria-label="Approve — the way it all feels together"
                 aria-disabled={refused}
               >

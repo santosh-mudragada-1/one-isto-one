@@ -1,5 +1,4 @@
 import { gsap, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import Chrome from '../../../components/Chrome'
 import styles from './Line.module.css'
@@ -57,7 +56,6 @@ export default function Line() {
       duration: DRAW,
       ease: 'power1.inOut',
     })
-      .add(() => sfx.slide(), 0.1)
 
     /* Each corner lights as the stroke arrives at it. */
     NODES.forEach((n, i) => {
@@ -66,7 +64,7 @@ export default function Line() {
         { opacity: 0, scale: 0.4 },
         { opacity: 1, scale: 1, duration: 0.4, ease: 'power3.out' },
         n.at * DRAW
-      ).add(() => sfx.snap(), n.at * DRAW)
+      )
     })
 
     /* The headline is revealed by the line's own progress, not by a

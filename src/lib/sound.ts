@@ -1,7 +1,15 @@
 /* ============================================================
-   Sound
-   Synthesised on the fly — no audio files to load, nothing to
-   wait for. Off by default: sound is an offer, never an ambush.
+   Sound — CURRENTLY UNWIRED
+
+   Deliberately kept, not abandoned. Every call site was removed on
+   2026-07-30 so cues can be placed one at a time, where they earn
+   their place, rather than being switched on everywhere at once.
+
+   To bring a cue back: import { sfx } and call it, then re-add a
+   toggle so it can be turned off. Nothing else here needs changing.
+
+   Synthesised on the fly — no audio files to load, nothing to wait
+   for. Off by default: sound is an offer, never an ambush.
    ============================================================ */
 
 let ctx: AudioContext | null = null

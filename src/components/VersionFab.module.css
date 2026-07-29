@@ -97,8 +97,28 @@
   line-height: 1;
 }
 
-.rowDot {
+/* Says which direction is chosen and which is kept on purpose. */
+.chip {
   margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--grey-40);
+  border: 1px solid var(--grey-20);
+  padding: 3px 6px;
+  align-self: center;
+  flex: none;
+}
+
+.chipFinal {
+  color: var(--ink);
+  background: var(--light);
+  border-color: var(--light);
+}
+
+.rowDot {
+  margin-left: calc(var(--u) * 1.5);
   width: 6px;
   height: 6px;
   background: currentColor;

@@ -1,8 +1,6 @@
 import type { ComponentType } from 'react'
 
 import ActualSize from './hero/ActualSize/ActualSize'
-import Sentence from './hero/Sentence/Sentence'
-import Registration from './hero/Registration/Registration'
 import Line from './hero/Line/Line'
 import Ratio from './hero/Ratio/Ratio'
 
@@ -12,12 +10,17 @@ import Rewrite from './problem/Rewrite/Rewrite'
 import SignOff from './problem/SignOff/SignOff'
 import Seams from './problem/Seams/Seams'
 
+/** `final` ships. `reference` is kept deliberately, not left behind. */
+export type Status = 'final' | 'reference'
+
 export type Version = {
   id: string
+  /** Kept stable across deletions — these are the numbers we talk in. */
   num: string
   name: string
   /** The one thing this direction is remembered by. */
   signature: string
+  status?: Status
   /** True when the version drives itself from page scroll rather than
    *  playing out inside a single viewport. */
   scrolls?: boolean
@@ -45,27 +48,15 @@ export const SECTIONS: Section[] = [
         num: '01',
         name: 'Actual Size',
         signature: 'The page measures itself.',
+        status: 'reference',
         Component: ActualSize,
-      },
-      {
-        id: 'sentence',
-        num: '02',
-        name: 'The Sentence',
-        signature: 'The sentence is pushed along by its own changing word.',
-        Component: Sentence,
-      },
-      {
-        id: 'registration',
-        num: '03',
-        name: 'Registration',
-        signature: 'Two impressions lock into register.',
-        Component: Registration,
       },
       {
         id: 'line',
         num: '04',
         name: 'The Unbroken Line',
         signature: 'One stroke that never lifts.',
+        status: 'final',
         Component: Line,
       },
       {
@@ -73,6 +64,7 @@ export const SECTIONS: Section[] = [
         num: '05',
         name: 'The Living Ratio',
         signature: 'The colon splits the screen and always returns to 1:1.',
+        status: 'reference',
         Component: Ratio,
       },
     ],
@@ -126,3 +118,12 @@ export const SECTIONS: Section[] = [
     ],
   },
 ]
+
+/** Where the deck opens: the chosen direction, not the first row. */
+export const defaultPosition = () => {
+  for (let s = 0; s < SECTIONS.length; s++) {
+    const v = SECTIONS[s].versions.findIndex((x) => x.status === 'final')
+    if (v >= 0) return { section: s, version: v }
+  }
+  return { section: 0, version: 0 }
+}

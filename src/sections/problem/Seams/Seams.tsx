@@ -1,5 +1,4 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
-import { sfx } from '../../../lib/sound'
 import { useGsap } from '../../../lib/useGsap'
 import styles from './Seams.module.css'
 
@@ -64,7 +63,6 @@ export default function Seams() {
       tl.to(p, { x: spread, duration: 1.4, ease: 'power2.inOut' }, 0.4)
         .to(names[i], { opacity: 1, duration: 0.5 }, 0.9 + i * 0.08)
     })
-    tl.add(() => sfx.slide(), 0.4)
 
     /* And then it closes again — and the joins do not go away. */
     panels.forEach((p) => {
@@ -73,7 +71,6 @@ export default function Seams() {
     tl.to(names, { opacity: 0, duration: 0.5 }, 2.6)
       .to(seams, { opacity: 1, duration: 0.5, stagger: 0.08 }, 3.7)
       .to(notes, { opacity: 1, duration: 0.5, stagger: 0.08 }, 3.9)
-      .add(() => sfx.lock(), 3.9)
 
     /* One join opens until it is the only thing on screen. */
     tl.to([notes, head], { opacity: 0, duration: 0.4 }, 5.4)
