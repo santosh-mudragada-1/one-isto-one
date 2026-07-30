@@ -17,6 +17,7 @@ export default function App() {
   /** Bumping this remounts, replaying from frame one. */
   const [take, setTake] = useState(0)
 
+  const hint = useRef<HTMLSpanElement | null>(null)
   const curtain = useRef<HTMLDivElement | null>(null)
   const label = useRef<HTMLDivElement | null>(null)
   const busy = useRef(false)
@@ -32,6 +33,29 @@ export default function App() {
     window.scrollTo(0, 0)
     const id = window.setTimeout(() => ScrollTrigger.refresh(), 60)
     return () => window.clearTimeout(id)
+  }, [assembled, section, version, take])
+
+  /* The cue guides the first screen and then gets out of the way. It sits
+     bottom-centre, and Section 03's names travel straight through that
+     spot — a permanent cue would be walked over by real content. */
+  useEffect(() => {
+    let raf = 0
+    const read = () => {
+      raf = 0
+      const el = hint.current
+      if (!el) return
+      const past = window.scrollY / Math.max(1, window.innerHeight * 0.5)
+      el.style.opacity = String(Math.max(0, 1 - past))
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(read)
+    }
+    read()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
   }, [assembled, section, version, take])
 
   /** Cover, swap, uncover. */
@@ -105,7 +129,11 @@ export default function App() {
       </main>
 
       {scrolls && (
-        <span className={`${styles.scrollHint} label`} aria-hidden="true">
+        <span
+          ref={hint}
+          className={`${styles.scrollHint} label`}
+          aria-hidden="true"
+        >
           Scroll
           <span className={styles.scrollHintTick} />
         </span>

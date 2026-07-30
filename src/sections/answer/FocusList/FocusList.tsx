@@ -49,8 +49,10 @@ const CENTRE = 0.5
 /** Ramps in just above the fold, and out well before the heading. */
 const ENTER_AT = 1.04
 const ENTER_OVER = 0.14
-const EXIT_AT = 0.2
-const EXIT_OVER = 0.09
+/* Higher now that the statement sits lower — a name must be gone
+   before it can reach it. */
+const EXIT_AT = 0.26
+const EXIT_OVER = 0.08
 
 const toneAt = gsap.utils.interpolate('#8f8f8a', '#0e0e0e')
 
@@ -82,7 +84,6 @@ export default function FocusList() {
     const subs = q(`.${styles.sub}`) as HTMLElement[]
     const head = q(`.${styles.head}`)
     const blurbs = q(`.${styles.blurbs}`)
-    const close = q(`.${styles.close}`)
 
     /* Layout metrics, taken once. Item centres are measured unscaled —
        offsetTop/offsetHeight ignore transforms, so scaling a name never
@@ -157,7 +158,9 @@ export default function FocusList() {
       },
     })
 
-    /* The statement arrives and then stays for the whole reading. */
+    /* The statement arrives and stays. It is the last thing on screen
+       too — the section ends on it rather than handing over to a
+       separate closing line. */
     tl.from(
       q('.maskline > span'),
       { yPercent: 115, duration: 0.9, stagger: 0.1, ease: 'power4.out' },
@@ -168,11 +171,9 @@ export default function FocusList() {
 
       /* The whole track travels. Linear on purpose: easing here would
          make one of the five feel more important than the others. */
-      .to(state, { ty: to, duration: 6.6, ease: 'none', onUpdate: apply }, 2.5)
+      .to(state, { ty: to, duration: 6.9, ease: 'none', onUpdate: apply }, 2.4)
 
-      /* Only once the five are done does the statement give up the frame. */
-      .to(head, { opacity: 0, duration: 0.6 }, 9.4)
-      .to(close, { opacity: 1, duration: 0.7 }, 9.7)
+    void head
 
     const onResize = () => {
       measure()
@@ -222,10 +223,6 @@ export default function FocusList() {
             </div>
           ))}
         </div>
-
-        <h3 className={`display display--sm ${styles.close}`}>
-          Holding it is the easy half.
-        </h3>
       </div>
     </section>
   )
