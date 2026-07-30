@@ -2,15 +2,15 @@
    05 · 02 — MOVE ONE
 
    Daylight. The spine turns at 60% and runs across the screen, and
-   the six things a customer meets hang off it. Push any one of them
-   and the whole rig swings, in formation, from a single pivot.
+   the six things a customer meets cross the screen ON it.
 
-   No paragraphs, one word per object.
+   Above them, the only type on the site that is not on a baseline:
+   the heading rides a line that bends the harder the page is thrown.
    ============================================================ */
 
 .root {
   position: relative;
-  height: 320vh;
+  height: 460vh;
   background: var(--bg);
   color: var(--fg);
   --content-left: calc(13.889% + clamp(1.5rem, 3.2vw, 3.5rem));
@@ -30,68 +30,100 @@
   color: var(--fg-faint);
 }
 
-.head {
+/* The heading, for anything that reads rather than looks. */
+.read {
   position: absolute;
-  left: var(--content-left);
-  right: var(--gutter);
-  top: 30%;
-  margin: 0;
-  max-width: 12ch;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* ---- the rig -----------------------------------------------------
-   Hung from the line at 60%. Nothing here rotates: the row bows, in
-   one wave, and the threads stretch to reach it — so the bend is
-   visibly something happening TO the things and never to the stroke
-   they hang from. */
+/* ---- the heading, on a line that bends ---------------------------
+   Set on a path rather than a baseline, so scroll speed can bend the
+   path underneath it. The line itself is never drawn — only the type
+   standing on it. */
 
-.rig {
+.headline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 15%;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.headline text {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' var(--wdth-display);
+  /* In the headline's own units, so it is the same fraction of the
+     width at every screen size and never needs a breakpoint. */
+  font-size: 108px;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  fill: var(--fg);
+}
+
+.wave {
+  stroke: none;
+}
+
+.cue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  text-align: center;
+  color: var(--fg-faint);
+  pointer-events: none;
+}
+
+/* ---- the six, crossing --------------------------------------------
+   Nothing at the right edge, full size through the middle, nothing
+   again at the left. You never see all six at once, which is the
+   point: a customer does not meet them all at once either — and every
+   one of them arrives on the same line. */
+
+.track {
   position: absolute;
   left: 0;
   right: 0;
   top: 60%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: clamp(1.75rem, 5.5vw, 5.5rem);
-  will-change: transform;
+  height: 0;
 }
 
-.hang {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: none;
-}
-
-/* The thread it hangs on. Staggered lengths so the row reads as hung
-   rather than as a row of icons on a shelf. */
-.drop {
-  width: 1px;
-  height: calc(var(--u) * 5);
-  background: var(--rule);
-  transform: scaleY(0);
-  transform-origin: top center;
-}
-.hang:nth-child(2n) .drop {
-  height: calc(var(--u) * 8);
-}
-.hang:nth-child(3n) .drop {
-  height: calc(var(--u) * 6.5);
-}
-
-.thing {
+.card {
+  position: absolute;
+  top: 0;
+  width: clamp(150px, 15.5vw, 232px);
+  padding: calc(var(--u) * 3) calc(var(--u) * 2) calc(var(--u) * 2.25);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(var(--u) * 1.5);
-  opacity: 0;
+  gap: calc(var(--u) * 2);
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
   will-change: transform;
+  /* The same 45° cut as the mark, on the corner that could have been
+     sharp. */
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer),
+    100% 100%,
+    0 100%
+  );
 }
 
 .glyph {
   display: block;
-  width: clamp(34px, 4.4vw, 58px);
+  width: 46%;
 }
 
 .name {
@@ -99,28 +131,11 @@
   white-space: nowrap;
 }
 
-/* Says what to do, once, and gets out of the way the moment it is
-   done. An instruction that stays is an instruction nobody followed. */
-.cue {
-  position: absolute;
-  left: 50%;
-  top: 60%;
-  transform: translate(-50%, calc(var(--u) * -4));
-  color: var(--fg-faint);
-  opacity: 0;
-  pointer-events: none;
-}
-
 @media (max-width: 820px) {
   .root {
     --content-left: calc(13.889% + var(--u) * 1.5);
   }
-  .rig {
-    gap: clamp(0.75rem, 3.5vw, 2rem);
-    padding: 0 var(--u);
-  }
-  .name {
-    font-size: 0.5rem;
-    letter-spacing: 0.1em;
+  .card {
+    width: clamp(130px, 46vw, 180px);
   }
 }

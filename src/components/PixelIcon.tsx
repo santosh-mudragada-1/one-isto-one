@@ -297,9 +297,14 @@ const DEPTH = 0.62
 export default function PixelIcon({
   name,
   className,
+  hover = false,
 }: {
   name: IconName
   className?: string
+  /** Re-resolve the cells on hover. Opt-in: where the object sits in
+   *  something that reacts as a whole, the whole thing should react
+   *  and the object inside it should not have its own idea. */
+  hover?: boolean
 }) {
   const cells: Array<[number, number]> = []
   MAPS[name].forEach((row, y) =>
@@ -310,7 +315,7 @@ export default function PixelIcon({
 
   return (
     <svg
-      className={`${styles.icon} ${className ?? ''}`}
+      className={`${styles.icon} ${hover ? styles.live : ''} ${className ?? ''}`}
       viewBox={`0 0 ${12 + DEPTH} ${12 + DEPTH}`}
       aria-hidden="true"
     >

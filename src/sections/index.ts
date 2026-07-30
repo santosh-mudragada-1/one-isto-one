@@ -211,7 +211,7 @@ export const SECTIONS: Section[] = [
         num: '02',
         name: 'Move One',
         signature:
-          'Six things hang off the line and swing from one pivot — you cannot move one on its own.',
+          'The heading rides a line that bends with scroll speed; the six cross the screen on the spine, one at a time.',
         status: 'final',
         scrolls: true,
         Component: Mobile,

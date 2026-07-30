@@ -66,7 +66,57 @@
    panels read as empty image slots, which is the one thing this brand
    cannot afford — there is no photography to put in them. */
 .work {
+  position: relative;
+  z-index: 2;
   width: min(66%, 98px);
+}
+
+/* ---- touching a piece --------------------------------------------
+   The whole panel answers, not the object inside it: the argument of
+   this section is that these are six separate PIECES, so a piece is
+   what has to react. It fills in as a coarse grid of squares running
+   on the 45° of the mark, and the object inverts to white inside it.
+
+   Transitions rather than tweens: six of these can be under the
+   cursor in a second and none of them should cost an animation. */
+
+.fill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cell {
+  background: var(--grey-20);
+  transform: scale(0);
+  transition: transform 0.24s var(--ease-out);
+  transition-delay: calc(var(--i) * 16ms);
+}
+
+.panel:hover .cell {
+  transform: scale(1);
+}
+
+/* The object inverts a beat late, so it turns as the fill reaches it
+   rather than before the panel has changed at all. */
+.work [data-px] {
+  transition: fill 0.18s var(--ease-out) 0.13s;
+}
+
+.panel:hover .work {
+  --px-face: var(--light);
+  --px-edge: var(--grey-40);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell {
+    transition-duration: 0.001ms;
+    transition-delay: 0ms;
+  }
 }
 
 .panelName {

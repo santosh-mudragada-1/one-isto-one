@@ -45,14 +45,14 @@
   }
 }
 
-.icon:hover .px,
+.live:hover .px,
 [data-icon-live] .px {
   animation: resolve 0.5s var(--ease-out) both;
   animation-delay: calc(var(--i) * 14ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .icon:hover .px,
+  .live:hover .px,
   [data-icon-live] .px {
     animation: none;
   }

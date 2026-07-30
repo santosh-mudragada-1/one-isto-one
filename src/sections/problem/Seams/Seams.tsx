@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { splitChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
@@ -23,6 +24,17 @@ const SEAMS = ['3 emails', '2 weeks', '1 assumption', 'nobody asked', 'a differe
 
 /** The join that opens at the end. */
 const OPENS = 2
+
+/* The grid a panel fills in with when you touch it. Coarse on purpose:
+   these have to read as pixels, not as a wipe. */
+const FILL_X = 5
+const FILL_Y = 9
+const FILL = Array.from({ length: FILL_X * FILL_Y }, (_, n) => ({
+  key: n,
+  /* Column plus row, so the fill sweeps the 45° of the mark's own
+     chamfer rather than straight across. */
+  step: (n % FILL_X) + Math.floor(n / FILL_X),
+}))
 
 /**
  * 02 · 05 — THE SEAMS
@@ -158,6 +170,15 @@ export default function Seams() {
               className={styles.panel}
               style={{ left: `${i * 16.6667}%`, background: p.tone }}
             >
+              <span className={styles.fill} aria-hidden="true">
+                {FILL.map((c) => (
+                  <span
+                    className={styles.cell}
+                    key={c.key}
+                    style={{ '--i': c.step } as CSSProperties}
+                  />
+                ))}
+              </span>
               <PixelIcon name={p.icon} className={styles.work} />
               <span className={`${styles.panelName} label`}>
                 {p.by}
