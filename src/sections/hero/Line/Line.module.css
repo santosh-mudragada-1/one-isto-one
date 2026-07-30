@@ -15,18 +15,8 @@
   height: 100dvh;
 }
 
-/* Nodes are HTML rather than SVG so they stay perfect squares — the
-   path is stretched to the viewport, but the colon square never is. */
-.node {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  background: var(--paper);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-
-/* The band the line encloses. Content lives inside its own frame. */
+/* The band the line encloses. Content lives inside its own frame.
+   The frame's corner marks are drawn by the spine, in its svg. */
 .band {
   position: absolute;
   left: 5.833%;

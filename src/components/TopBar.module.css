@@ -1,3 +1,10 @@
+/* The right edge is the SPINE, not the page gutter: 1290 of 1440 is
+   where the stroke runs for the whole back half of the page, and a
+   call-to-action set to the plain gutter straddles it — so the line
+   either loses a bite out of itself on every screen or strikes
+   through the CTA's own label. Hung off the line instead, the button
+   sits on the same grid as everything else here, and the stroke runs
+   down its right edge as one continuous move. */
 .bar {
   position: absolute;
   left: 0;
@@ -6,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--gutter);
+  padding: 0 10.417% 0 var(--gutter);
   z-index: 6;
   pointer-events: none;
 }

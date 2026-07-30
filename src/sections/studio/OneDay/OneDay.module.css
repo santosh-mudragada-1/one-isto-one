@@ -1,0 +1,133 @@
+/* ============================================================
+   05 · 01 — ONE DAY
+
+   Daylight again, and the only section that moves sideways. The spine
+   stops descending, turns at 60% of the screen, and becomes the rail
+   the day runs along — so the horizontal travel is not a device laid
+   over the line, it is the line being travelled.
+   ============================================================ */
+
+.root {
+  position: relative;
+  height: 420vh;
+  background: var(--bg);
+  color: var(--fg);
+
+  /* Type starts to the RIGHT of where the stroke comes down — 200 of
+     1440 — the same margin the Notebook is written against. */
+  --content-left: calc(13.889% + clamp(1.5rem, 3.2vw, 3.5rem));
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.eyebrow {
+  position: absolute;
+  left: var(--content-left);
+  bottom: calc(var(--u) * 5);
+  color: var(--fg-faint);
+}
+
+.head {
+  position: absolute;
+  left: var(--content-left);
+  right: var(--gutter);
+  top: 15%;
+  margin: 0;
+  max-width: 14ch;
+}
+
+.lead {
+  position: absolute;
+  left: var(--content-left);
+  top: 34%;
+  margin: 0;
+  max-width: 46ch;
+  color: var(--fg-quiet);
+  font-size: var(--t-body);
+  line-height: 1.45;
+  opacity: 0;
+}
+
+/* ---- the rail ----------------------------------------------------
+   Zero height and sitting exactly where the spine turns, so every
+   moment hangs off the stroke itself rather than off a rule drawn to
+   look like it. */
+
+.rail {
+  position: absolute;
+  left: 0;
+  top: 60%;
+  height: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(2.5rem, 7vw, 7rem);
+  will-change: transform;
+}
+
+.moment {
+  position: relative;
+  flex: none;
+  width: clamp(210px, 19vw, 310px);
+  height: 0;
+}
+
+/* What happens, above the line. */
+.what {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--u) * 6);
+  font-size: var(--t-body);
+  line-height: 1.35;
+  color: var(--fg);
+}
+
+.when {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--u) * 3);
+  color: var(--fg-faint);
+}
+
+/* Reaches down to the stroke, so the moment is attached to the day
+   rather than floating above it. */
+.tick {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: calc(var(--u) * 2.25);
+  background: var(--rule);
+}
+
+/* And who holds it. Six moments, six times the same answer — which is
+   the entire argument of the section, made by repetition rather than
+   by a claim. */
+.who {
+  position: absolute;
+  left: 0;
+  top: calc(var(--u) * 2.5);
+  color: var(--fg);
+  letter-spacing: 0.3em;
+}
+
+/* 13.889% is where the stroke comes down. Type stays to the right of
+   it at every width — the line is the margin, not decoration. */
+@media (max-width: 820px) {
+  .root {
+    --content-left: calc(13.889% + var(--u) * 1.5);
+  }
+  .lead {
+    top: 30%;
+    max-width: none;
+    right: var(--gutter);
+  }
+  .moment {
+    width: clamp(180px, 62vw, 240px);
+  }
+}

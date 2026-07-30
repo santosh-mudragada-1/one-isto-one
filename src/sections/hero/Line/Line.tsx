@@ -1,35 +1,21 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { headingChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
-import Spine from '../../../components/Spine'
 import styles from './Line.module.css'
-
-/* The customer's path across the Hero. It frames the claim and leaves
-   at x=84, which is where Section 02 picks it up — the same component,
-   the same stroke, the same coordinate space. One line, drawn in
-   stretches, not a new line per section. */
-const SPINE = 'M 84 -10 V 300 H 1356 V 620 H 84 V 1160'
-
-/* Where the stroke turns, as a fraction of its own length — used to
-   pop each node at the moment the line reaches it. */
-const NODES = [
-  { left: '5.833%', top: '33.333%', at: 0.0965 },
-  { left: '94.167%', top: '33.333%', at: 0.4575 },
-  { left: '94.167%', top: '68.889%', at: 0.548 },
-  { left: '5.833%', top: '68.889%', at: 0.909 },
-]
-
-/** Short on purpose. A visitor who scrolls at once must never arrive to
- *  a line that appears to start in mid-air for no reason. */
-const DRAW = 1.15
 
 /**
  * 01 · 04 — THE UNBROKEN LINE
  *
- * The stroke itself lives in [Spine], shared with every section that
- * follows, so what continues down the page is literally the same line
- * rather than a lookalike handing over to another implementation.
- * This section owns only the content it frames.
+ * The stroke is not here. It is one path for the whole page, drawn by
+ * [Spine], and this section only declares the shape of its own stretch
+ * — `hero` in `lib/spine.ts`. What runs on down the page is literally
+ * the same line, not a lookalike handing over to another one.
+ *
+ * The frame's corner marks live in that svg too, for the same reason:
+ * anything that has to stay exactly on the stroke has to BE the
+ * stroke, or it will eventually come away from it.
+ *
+ * So this section owns only the content the line frames.
  */
 export default function Line({ flow = false }: { flow?: boolean }) {
   const root = useGsap<HTMLDivElement>((scope) => {
@@ -37,35 +23,20 @@ export default function Line({ flow = false }: { flow?: boolean }) {
     const reduced = prefersReducedMotion()
     const chars = headingChars(scope)
 
-    const nodes = q(`.${styles.node}`) as HTMLElement[]
     const sub = q(`.${styles.sub}`)
 
     if (reduced) {
-      gsap.set([...nodes, sub], { opacity: 1 })
+      gsap.set(sub, { opacity: 1 })
       gsap.set(chars, { yPercent: 0 })
       return
     }
 
-    const tl = gsap.timeline()
-
-    /* Each corner lights as the stroke arrives at it. */
-    NODES.forEach((n, i) => {
-      tl.fromTo(
-        nodes[i],
-        { opacity: 0, scale: 0.4 },
-        { opacity: 1, scale: 1, duration: 0.3, ease: 'power3.out' },
-        n.at * DRAW
-      )
-    })
-
     /* The headline does not wait for the line to finish. It arrives
        alongside it, so the first screen is settled in well under two
        seconds. */
-    tl.from(
-      chars,
-      { ...HEADING_REVEAL },
-      0.28
-    )
+    gsap
+      .timeline()
+      .from(chars, { ...HEADING_REVEAL }, 0.28)
       .to(sub, { opacity: 1, duration: 0.6 }, 0.85)
 
     return () => {
@@ -78,16 +49,8 @@ export default function Line({ flow = false }: { flow?: boolean }) {
       className={`${styles.root} ${flow ? styles.rootFlow : ''}`}
       ref={root}
       data-surface="dark"
+      data-spine="hero"
     >
-      {NODES.map((n) => (
-        <span
-          key={`${n.left}-${n.top}`}
-          className={styles.node}
-          style={{ left: n.left, top: n.top }}
-          aria-hidden="true"
-        />
-      ))}
-
       <div className={styles.band}>
         <h1 className={`display display--sm ${styles.head}`}>
           <span className="maskline">
@@ -102,9 +65,6 @@ export default function Line({ flow = false }: { flow?: boolean }) {
         </h1>
         <p className={`${styles.sub} label`}>One vision. Every connection.</p>
       </div>
-
-      {/* Last, so it paints over this section's own content. */}
-      <Spine d={SPINE} mode="intro" duration={DRAW} />
     </div>
   )
 }

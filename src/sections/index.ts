@@ -14,6 +14,12 @@ import SecondLine from './answer/SecondLine/SecondLine'
 import FocusList from './answer/FocusList/FocusList'
 
 import Notebook from './thinking/Notebook/Notebook'
+import Questions from './thinking/Questions/Questions'
+
+import OneDay from './studio/OneDay/OneDay'
+import Mobile from './studio/Mobile/Mobile'
+
+import Apart from './close/Apart/Apart'
 
 /** `final` ships. `reference` is kept deliberately, not left behind. */
 export type Status = 'final' | 'reference'
@@ -168,9 +174,64 @@ export const SECTIONS: Section[] = [
         name: 'The Notebook',
         signature:
           'Dated entries including one they stopped believing and one that stops mid-sentence.',
-        status: 'final',
+        status: 'reference',
         scrolls: true,
         Component: Notebook,
+      },
+      {
+        id: 'questions',
+        num: '02',
+        name: 'The Questions',
+        signature:
+          'Five questions nobody else asks, each with an answer line that is never filled in.',
+        status: 'final',
+        scrolls: true,
+        Component: Questions,
+      },
+    ],
+  },
+  {
+    id: 'studio',
+    num: '05',
+    name: 'The Studio',
+    intent: 'One team holds the whole day, and I know who to call.',
+    versions: [
+      {
+        id: 'one-day',
+        num: '01',
+        name: 'One Day',
+        signature:
+          'The day travels sideways along the spine, and the same name sits under all six hours of it.',
+        status: 'reference',
+        scrolls: true,
+        Component: OneDay,
+      },
+      {
+        id: 'mobile',
+        num: '02',
+        name: 'Move One',
+        signature:
+          'Six things hang off the line and swing from one pivot — you cannot move one on its own.',
+        status: 'final',
+        scrolls: true,
+        Component: Mobile,
+      },
+    ],
+  },
+  {
+    id: 'close',
+    num: '06',
+    name: 'Start a Conversation',
+    intent: 'I already know what I would say. I can send that in one line.',
+    versions: [
+      {
+        id: 'apart',
+        num: '01',
+        name: 'Where It Comes Apart',
+        signature: 'The line stops — on a 9px square, for the only time on the site.',
+        status: 'final',
+        scrolls: true,
+        Component: Apart,
       },
     ],
   },

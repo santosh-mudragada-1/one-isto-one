@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from './lib/gsap'
+import Spine from './components/Spine'
 import StickyNav from './components/StickyNav'
 import VersionFab from './components/VersionFab'
 import Assembled from './sections/Assembled'
@@ -126,6 +127,11 @@ export default function App() {
         ) : (
           <currentVersion.Component key={`${section}-${version}-${take}`} />
         )}
+
+        {/* One stroke for whatever is mounted above, measured from it
+            and painted over it. Keyed with the content so it always
+            re-measures the page it is drawing. */}
+        <Spine key={`spine-${assembled}-${section}-${version}-${take}`} />
       </main>
 
       {scrolls && (

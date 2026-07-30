@@ -2,15 +2,7 @@ import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { splitChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
 import PixelIcon from '../../../components/PixelIcon'
-import Spine from '../../../components/Spine'
 import styles from './Seams.module.css'
-
-/* The customer's path across this section. It enters at the x the Hero
-   left it on and runs along the BASE of the object rather than through
-   it — crossing the base still crosses every join, without cutting six
-   panels into twelve. The object is 32vh and centred, so its base sits
-   at 66vh, which is y=594 in this stretched 900-unit space. */
-const SPINE = 'M 84 -340 V 594 H 1290 V 2000'
 
 /* Six off-whites that do not match. The spread is deliberately wide
    enough to SEE — an earlier pass held them within 5% lightness, which
@@ -142,8 +134,13 @@ export default function Seams() {
   }, [])
 
   return (
-    <section className={styles.root} data-surface="dark" ref={root}>
-      <div className={styles.pin}>
+    <section
+      className={styles.root}
+      data-surface="dark"
+      data-spine="seams"
+      ref={root}
+    >
+      <div className={styles.pin} data-pin>
         <span className={`${styles.eyebrow} label`}>02 — The problem</span>
         <h2 className={`display display--sm ${styles.head}`}>
           <span className="maskline">
@@ -194,9 +191,6 @@ export default function Seams() {
           Your customer stands at the door.
         </h3>
       </div>
-
-      {/* Last, so it paints over this section's own content. */}
-      <Spine d={SPINE} />
     </section>
   )
 }

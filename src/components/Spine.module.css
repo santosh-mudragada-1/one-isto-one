@@ -1,26 +1,34 @@
-/* The svg is sized and offset from JS in real pixels, 1:1 with the
-   screen. A viewBox would scale x by width and y by height, and those
-   are almost never equal — which with a dashed stroke makes the dash
-   length direction-dependent and the draw stop short of its own path. */
+/* Spans the whole page so the stroke below can stay stuck to the
+   window for its entire length — one lock, not one per section. */
 .field {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset: 0;
   pointer-events: none;
 }
 
-/* Sticky directly, not inside a sticky wrapper. A wrapper is a stacking
-   context, and that traps mix-blend-mode — which can only see the
-   backdrop inside its own group, so the stroke would stop inverting on a
-   light ground. The headroom comes from the field's own offset rather
-   than from this `top`, because a sticky offset only applies while the
-   element is actually stuck. */
+/* Sticky on the svg ITSELF, never on a wrapper around it. A wrapper is
+   a stacking context, and that traps mix-blend-mode: the stroke can
+   only see the backdrop inside its own group, so it would stop
+   inverting the moment the ground turned white.
+
+   The svg is sized in real pixels with a matching viewBox, so user
+   units are pixels 1:1 in both axes. A viewBox that scales x by width
+   and y by height — which are never equal — makes a dash length
+   direction-dependent, and the stroke stops short partway along its
+   own path. That one looked perfect at exactly 1440×900. */
 .spine {
   position: sticky;
   top: 0;
+  /* Above the nav (60), below the curtain (90) and the switcher (100).
+     The nav's call-to-action straddles 89.583%, which is exactly where
+     the stroke runs for the whole back half of the page — behind it,
+     the line loses a 44px bite on every screen of Sections 03 to 06.
+     It goes over. The z-index is on the svg and NOT on .field: a
+     stacking context on the parent would trap the blend inside it and
+     the stroke would stop inverting over paper. */
+  z-index: 70;
   left: 0;
   display: block;
-  width: 100%;
   mix-blend-mode: difference;
 }
 
@@ -28,4 +36,10 @@
   fill: none;
   stroke: var(--paper);
   stroke-width: 1;
+}
+
+/* Where the stroke turns in the Hero. Inside the svg rather than in
+   the page, so they cannot come away from the corners they mark. */
+.node {
+  fill: var(--paper);
 }

@@ -110,11 +110,13 @@
   opacity: 0;
 }
 
+/* The margin rule is drawn by the spine at 13.889% and does not move
+   with the breakpoint, so the type must not cross to the left of it.
+   Only the padding closes up. */
 @media (max-width: 820px) {
   .head,
   .entries,
   .eyebrow {
-    left: var(--gutter);
-    padding-left: 0;
+    padding-left: calc(var(--u) * 1.5);
   }
 }

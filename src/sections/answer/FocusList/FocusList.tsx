@@ -2,12 +2,7 @@ import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { headingChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
 import PixelIcon, { type IconName } from '../../../components/PixelIcon'
-import Spine from '../../../components/Spine'
 import styles from './FocusList.module.css'
-
-/* The customer's line, continuing. Long tail so it covers the join into
-   the next section, whose own stroke has barely started by then. */
-const SPINE = 'M 1290 -340 V 2000'
 
 /* Five parts of one experience. Each name is two words, so the thing it
    makes can open a gap in the middle of it. */
@@ -190,8 +185,13 @@ export default function FocusList() {
   }, [])
 
   return (
-    <section className={styles.root} data-surface="light" ref={root}>
-      <div className={styles.pin}>
+    <section
+      className={styles.root}
+      data-surface="light"
+      data-spine="focus"
+      ref={root}
+    >
+      <div className={styles.pin} data-pin>
         <span className={`${styles.eyebrow} label`}>03 — What we do</span>
 
         <h2 className={`display display--sm ${styles.head}`}>
@@ -224,9 +224,6 @@ export default function FocusList() {
           ))}
         </div>
       </div>
-
-      {/* Last, so it paints over this section's own content. */}
-      <Spine d={SPINE} />
     </section>
   )
 }
