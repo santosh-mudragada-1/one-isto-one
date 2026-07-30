@@ -49,22 +49,3 @@
   color: var(--grey-60);
   opacity: 0;
 }
-
-/* ---- custom footer ------------------------------------------- */
-
-.foot {
-  position: absolute;
-  left: var(--gutter);
-  bottom: calc(var(--u) * 4.5);
-  color: var(--grey-40);
-  pointer-events: none;
-}
-
-/* Sits with the content it belongs to. It was bottom-centred, which put
-   it straight underneath the page's own scroll cue. */
-.note {
-  display: block;
-  margin-top: calc(var(--u) * 2);
-  color: var(--grey-40);
-  opacity: 0;
-}

@@ -38,10 +38,9 @@ export default function Line({ flow = false }: { flow?: boolean }) {
 
     const nodes = q(`.${styles.node}`) as HTMLElement[]
     const sub = q(`.${styles.sub}`)
-    const note = q(`.${styles.note}`)
 
     if (reduced) {
-      gsap.set([...nodes, sub, note], { opacity: 1 })
+      gsap.set([...nodes, sub], { opacity: 1 })
       gsap.set(q('.maskline > span'), { yPercent: 0 })
       return
     }
@@ -67,7 +66,6 @@ export default function Line({ flow = false }: { flow?: boolean }) {
       0.28
     )
       .to(sub, { opacity: 1, duration: 0.6 }, 0.85)
-      .to(note, { opacity: 1, duration: 0.6 }, 1.15)
 
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill())
@@ -105,13 +103,6 @@ export default function Line({ flow = false }: { flow?: boolean }) {
           </span>
         </h1>
         <p className={`${styles.sub} label`}>One vision. Every connection.</p>
-        <span className={`${styles.note} label`}>
-          The line never lifts — it runs the whole page ↓
-        </span>
-      </div>
-
-      <div className={styles.foot}>
-        <span className="label">India — 2026</span>
       </div>
     </div>
   )
