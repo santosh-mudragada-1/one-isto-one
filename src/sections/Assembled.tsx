@@ -1,5 +1,6 @@
 import Line from './hero/Line/Line'
 import Seams from './problem/Seams/Seams'
+import SecondLine from './answer/SecondLine/SecondLine'
 
 /**
  * THE PAGE
@@ -14,13 +15,14 @@ import Seams from './problem/Seams/Seams'
  * holds its content still while the document scrolls, so its line has
  * to live in viewport space and be driven by that section's progress.
  *
- * Sections 03–06 append here as they are built.
+ * Sections 04–06 append here as they are built.
  */
 export default function Assembled() {
   return (
     <>
       <Line flow />
       <Seams />
+      <SecondLine />
     </>
   )
 }

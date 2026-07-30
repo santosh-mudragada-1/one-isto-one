@@ -9,7 +9,7 @@ import styles from './Seams.module.css'
    it — crossing the base still crosses every join, without cutting six
    panels into twelve. The object is 32vh and centred, so its base sits
    at 66vh, which is y=594 in this stretched 900-unit space. */
-const SPINE = 'M 84 -60 V 594 H 1356 V 960'
+const SPINE = 'M 84 -60 V 594 H 1290 V 960'
 
 /* Six off-whites that do not match. The spread is deliberately wide
    enough to SEE — an earlier pass held them within 5% lightness, which

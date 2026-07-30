@@ -10,6 +10,8 @@ import Rewrite from './problem/Rewrite/Rewrite'
 import SignOff from './problem/SignOff/SignOff'
 import Seams from './problem/Seams/Seams'
 
+import SecondLine from './answer/SecondLine/SecondLine'
+
 /** `final` ships. `reference` is kept deliberately, not left behind. */
 export type Status = 'final' | 'reference'
 
@@ -120,6 +122,24 @@ export const SECTIONS: Section[] = [
         status: 'final',
         scrolls: true,
         Component: Seams,
+      },
+    ],
+  },
+  {
+    id: 'answer',
+    num: '03',
+    name: 'What We Do',
+    intent: 'We finally found someone who sees the whole picture.',
+    versions: [
+      {
+        id: 'second-line',
+        num: '01',
+        name: 'The Second Line',
+        signature:
+          'A second stroke arrives, matches pace, and never leaves — the five are where they are tied together.',
+        status: 'final',
+        scrolls: true,
+        Component: SecondLine,
       },
     ],
   },

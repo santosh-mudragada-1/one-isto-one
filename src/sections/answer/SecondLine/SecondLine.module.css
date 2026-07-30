@@ -1,0 +1,164 @@
+/* ============================================================
+   03 · 01 — THE SECOND LINE
+
+   The first light section. Two ink sections established the problem;
+   the relief arrives as daylight rather than as an adjective.
+
+   It is also the first right-aligned section. The line leaves Section
+   02 at 89.6% of the width, so the content hangs off the right rather
+   than fighting its way back to the left gutter.
+   ============================================================ */
+
+.root {
+  position: relative;
+  height: 440vh;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Where the two strokes run. The customer's is drawn by Spine at
+   89.583% (1290 of 1440); the studio's sits one gap to its left. The
+   gap is proportional, so it never changes as you scroll — which is
+   the entire promise of the section. */
+.pin {
+  --customer-x: 89.583%;
+  --studio-x: 87.8%;
+}
+
+.eyebrow {
+  position: absolute;
+  top: calc(var(--u) * 6);
+  right: calc(100% - var(--studio-x) + var(--u) * 5);
+  color: var(--fg-faint);
+}
+
+/* ---- the second line ------------------------------------------
+   Plain elements rather than SVG, so the rungs land on exactly the
+   same pixel row as the text they belong to. */
+
+.arrive {
+  position: absolute;
+  left: 0;
+  width: var(--studio-x);
+  top: 19%;
+  height: 1px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.descend {
+  position: absolute;
+  left: var(--studio-x);
+  top: 19%;
+  bottom: -10vh;
+  width: 1px;
+  background: var(--fg);
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+
+/* ---- content --------------------------------------------------- */
+
+.content {
+  position: absolute;
+  right: calc(100% - var(--studio-x) + var(--u) * 5);
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  max-width: 46ch;
+}
+
+.head {
+  margin: 0;
+}
+
+.sub {
+  margin: calc(var(--u) * 3) 0 0;
+  color: var(--fg-quiet);
+  opacity: 0;
+}
+
+/* ---- the five ties ---------------------------------------------
+   A tie is a connection, not a card. It has no edges, so it cannot be
+   misread as one of five things for sale. */
+
+.ties {
+  list-style: none;
+  margin: calc(var(--u) * 7) 0 0;
+  padding: 0;
+}
+
+.tie {
+  position: relative;
+  padding: calc(var(--u) * 2.25) 0;
+  opacity: 0;
+}
+
+.tieNum {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.2em;
+  color: var(--fg-faint);
+  margin-right: calc(var(--u) * 2);
+}
+
+.tieName {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' var(--wdth-display);
+  font-size: clamp(1.4rem, 2.5vw, 2.35rem);
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.tieSub {
+  display: block;
+  margin-top: calc(var(--u) * 1.25);
+  color: var(--fg-quiet);
+}
+
+/* The rung itself: reaches from the studio's line across to the
+   customer's, on the same row as the name it carries. */
+.rung {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--u) * 5);
+  width: calc(100vw * 0.01783);
+  height: 1px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.close {
+  position: absolute;
+  right: calc(100% - var(--studio-x) + var(--u) * 5);
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  text-align: right;
+  max-width: 22ch;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .content,
+  .close,
+  .eyebrow {
+    right: calc(100% - var(--studio-x) + var(--u) * 3);
+  }
+  .tieSub {
+    display: none;
+  }
+}
