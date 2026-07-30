@@ -69,6 +69,33 @@
   /* ---- Motion ---- */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---- Surface -------------------------------------------------
+     Sections address these rather than --ink / --paper directly, so a
+     section can be inverted by one attribute instead of by rewriting
+     every rule inside it. Default is the dark ground the site opens on. */
+  --bg: var(--ink);
+  --fg: var(--paper);
+  --fg-dim: var(--grey-80);
+  --fg-quiet: var(--grey-60);
+  --fg-faint: var(--grey-40);
+  --rule: var(--grey-20);
+}
+
+/* The light ground. Used from Section 03, where the argument turns from
+   the problem to someone owning it — the relief arrives as daylight
+   rather than as an adjective.
+
+   Note the greys are not simply swapped: --grey-60 reads as a mid tone
+   on ink but as weak on paper, so the quiet steps move DOWN the scale
+   (darker) rather than mirroring. */
+[data-surface='light'] {
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-dim: var(--grey-20);
+  --fg-quiet: var(--grey-40);
+  --fg-faint: var(--grey-60);
+  --rule: var(--grey-80);
 }
 
 /* The one shape rule of the whole system: cut the top-right corner,
