@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
+import { headingChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
 import Spine from '../../../components/Spine'
 import styles from './Line.module.css'
@@ -34,13 +35,14 @@ export default function Line({ flow = false }: { flow?: boolean }) {
   const root = useGsap<HTMLDivElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
+    const chars = headingChars(scope)
 
     const nodes = q(`.${styles.node}`) as HTMLElement[]
     const sub = q(`.${styles.sub}`)
 
     if (reduced) {
       gsap.set([...nodes, sub], { opacity: 1 })
-      gsap.set(q('.maskline > span'), { yPercent: 0 })
+      gsap.set(chars, { yPercent: 0 })
       return
     }
 
@@ -60,8 +62,8 @@ export default function Line({ flow = false }: { flow?: boolean }) {
        alongside it, so the first screen is settled in well under two
        seconds. */
     tl.from(
-      q('.maskline > span'),
-      { yPercent: 115, duration: 0.85, stagger: 0.1, ease: 'power4.out' },
+      chars,
+      { ...HEADING_REVEAL },
       0.28
     )
       .to(sub, { opacity: 1, duration: 0.6 }, 0.85)

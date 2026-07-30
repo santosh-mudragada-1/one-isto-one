@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
+import { headingChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
 import PixelIcon, { type IconName } from '../../../components/PixelIcon'
 import Spine from '../../../components/Spine'
@@ -76,6 +77,7 @@ export default function FocusList() {
   const root = useGsap<HTMLElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
+    const chars = headingChars(scope)
 
     const pin = q(`.${styles.pin}`)[0] as HTMLElement
     const track = q(`.${styles.track}`)[0] as HTMLElement
@@ -141,7 +143,7 @@ export default function FocusList() {
     if (reduced) {
       state.ty = window.innerHeight * CENTRE - (trackTop + centres[2])
       gsap.set(blurbs, { opacity: 1 })
-      gsap.set(q('.maskline > span'), { yPercent: 0 })
+      gsap.set(chars, { yPercent: 0 })
       apply()
       return
     }
@@ -162,8 +164,8 @@ export default function FocusList() {
        too — the section ends on it rather than handing over to a
        separate closing line. */
     tl.from(
-      q('.maskline > span'),
-      { yPercent: 115, duration: 0.9, stagger: 0.1, ease: 'power4.out' },
+      chars,
+      { ...HEADING_REVEAL },
       0
     )
       .to(blurbs, { opacity: 1, duration: 0.8 }, 0.8)

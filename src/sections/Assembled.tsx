@@ -1,6 +1,7 @@
 import Line from './hero/Line/Line'
 import Seams from './problem/Seams/Seams'
 import FocusList from './answer/FocusList/FocusList'
+import Notebook from './thinking/Notebook/Notebook'
 
 /**
  * THE PAGE
@@ -15,7 +16,7 @@ import FocusList from './answer/FocusList/FocusList'
  * holds its content still while the document scrolls, so its line has
  * to live in viewport space and be driven by that section's progress.
  *
- * Sections 04–06 append here as they are built.
+ * Sections 05–06 append here as they are built.
  */
 export default function Assembled() {
   return (
@@ -23,6 +24,7 @@ export default function Assembled() {
       <Line flow />
       <Seams />
       <FocusList />
+      <Notebook />
     </>
   )
 }

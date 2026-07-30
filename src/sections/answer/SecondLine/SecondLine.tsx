@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
+import { headingChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
 import Spine from '../../../components/Spine'
 import styles from './SecondLine.module.css'
@@ -55,6 +56,7 @@ export default function SecondLine() {
   const root = useGsap<HTMLElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
+    const chars = headingChars(scope)
 
     const arrive = q(`.${styles.arrive}`)
     const descend = q(`.${styles.descend}`)
@@ -67,7 +69,7 @@ export default function SecondLine() {
     if (reduced) {
       gsap.set([arrive, descend, ...rungs], { scaleX: 1, scaleY: 1 })
       gsap.set([sub, ...ties, close], { opacity: 1 })
-      gsap.set(q('.maskline > span'), { yPercent: 0 })
+      gsap.set(chars, { yPercent: 0 })
       return
     }
 
@@ -82,8 +84,8 @@ export default function SecondLine() {
 
     /* The claim, then the thing that makes it true. */
     tl.from(
-      q('.maskline > span'),
-      { yPercent: 115, duration: 0.9, stagger: 0.1, ease: 'power4.out' },
+      chars,
+      { ...HEADING_REVEAL },
       0
     )
 

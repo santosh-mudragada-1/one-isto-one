@@ -13,6 +13,8 @@ import Seams from './problem/Seams/Seams'
 import SecondLine from './answer/SecondLine/SecondLine'
 import FocusList from './answer/FocusList/FocusList'
 
+import Notebook from './thinking/Notebook/Notebook'
+
 /** `final` ships. `reference` is kept deliberately, not left behind. */
 export type Status = 'final' | 'reference'
 
@@ -151,6 +153,24 @@ export const SECTIONS: Section[] = [
         status: 'final',
         scrolls: true,
         Component: FocusList,
+      },
+    ],
+  },
+  {
+    id: 'thinking',
+    num: '04',
+    name: 'How We Think',
+    intent: 'They would have asked me things nobody asked me.',
+    versions: [
+      {
+        id: 'notebook',
+        num: '01',
+        name: 'The Notebook',
+        signature:
+          'Dated entries including one they stopped believing and one that stops mid-sentence.',
+        status: 'final',
+        scrolls: true,
+        Component: Notebook,
       },
     ],
   },

@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
+import { splitChars, HEADING_REVEAL } from '../../../lib/heading'
 import { useGsap } from '../../../lib/useGsap'
 import PixelIcon from '../../../components/PixelIcon'
 import Spine from '../../../components/Spine'
@@ -51,11 +52,19 @@ export default function Seams() {
     const notes = q(`.${styles.seamNote}`) as HTMLElement[]
     const crossNote = q(`.${styles.crossNote}`)
     const head = q(`.${styles.head}`)
+    /* Only the section heading, not the closing line — the close lands
+       over a blackout, where a per-character stagger would be lost. */
+    const headChars = (head[0] as HTMLElement)
+      ? Array.from(
+          (head[0] as HTMLElement).querySelectorAll<HTMLElement>('.maskline > span')
+        ).flatMap((l) => splitChars(l))
+      : []
     const close = q(`.${styles.close}`)
     const pixels = Array.from(scope.querySelectorAll('[data-px]'))
 
     if (reduced) {
       gsap.set([seams, ticks, notes, crossNote, head], { opacity: 1 })
+      gsap.set(headChars, { yPercent: 0 })
       gsap.set(pixels, { scale: 1, opacity: 1 })
       return
     }
@@ -71,7 +80,11 @@ export default function Seams() {
 
     /* It reads as one object. Then it comes apart, and every piece
        turns out to have had an author. */
-    tl.to(head, { opacity: 1, duration: 0.5 }, 0.2)
+    tl.to(head, { opacity: 1, duration: 0.5 }, 0.2).from(
+      headChars,
+      { ...HEADING_REVEAL },
+      0.25
+    )
 
     panels.forEach((p, i) => {
       const spread = (i - (PANELS.length - 1) / 2) * 34
@@ -133,7 +146,12 @@ export default function Seams() {
       <div className={styles.pin}>
         <span className={`${styles.eyebrow} label`}>02 — The problem</span>
         <h2 className={`display display--sm ${styles.head}`}>
-          One building. Six makers.
+          <span className="maskline">
+            <span>One building.</span>
+          </span>
+          <span className="maskline">
+            <span>Six makers.</span>
+          </span>
         </h2>
 
         <div className={styles.stage}>
