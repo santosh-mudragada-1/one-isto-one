@@ -1,15 +1,17 @@
-import { gsap, prefersReducedMotion } from '../../../lib/gsap'
+import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { useGsap } from '../../../lib/useGsap'
 import Chrome from '../../../components/Chrome'
+import Spine from '../../../components/Spine'
 import styles from './Line.module.css'
 
-/* One stroke, entering above the frame and leaving below it. The
-   geometry is authored in a 1440×900 space and stretched to the
-   viewport; `non-scaling-stroke` keeps the line 1px however it lands. */
-const PATH = 'M 84 -60 V 300 H 1356 V 620 H 84 V 960'
+/* The customer's path across the Hero. It frames the claim and leaves
+   at x=84, which is where Section 02 picks it up — the same component,
+   the same stroke, the same coordinate space. One line, drawn in
+   stretches, not a new line per section. */
+const SPINE = 'M 84 -60 V 300 H 1356 V 620 H 84 V 960'
 
 /* Where the stroke turns, as a fraction of its own length — used to
-   pop each node at the exact moment the line reaches it. */
+   pop each node at the moment the line reaches it. */
 const NODES = [
   { left: '5.833%', top: '33.333%', at: 0.0965 },
   { left: '94.167%', top: '33.333%', at: 0.4575 },
@@ -17,86 +19,58 @@ const NODES = [
   { left: '5.833%', top: '68.889%', at: 0.909 },
 ]
 
-const DRAW = 3.1
+/** Short on purpose. A visitor who scrolls at once must never arrive to
+ *  a line that appears to start in mid-air for no reason. */
+const DRAW = 1.15
 
 /**
- * 04 — THE UNBROKEN LINE
+ * 01 · 04 — THE UNBROKEN LINE
  *
- * Signature interaction: a single stroke draws the frame, reveals the
- * headline as it passes, and leaves the bottom of the screen without
- * stopping. In the full build this is the same path all the way down
- * the site — the transition between sections is that there isn't one.
+ * The stroke itself lives in [Spine], shared with every section that
+ * follows, so what continues down the page is literally the same line
+ * rather than a lookalike handing over to another implementation.
+ * This section owns only the content it frames.
  */
 export default function Line({ flow = false }: { flow?: boolean }) {
   const root = useGsap<HTMLDivElement>((scope) => {
     const q = gsap.utils.selector(scope)
     const reduced = prefersReducedMotion()
 
-    const svg = q(`.${styles.svg}`)[0] as unknown as SVGSVGElement
-    const path = q(`.${styles.path}`)[0] as unknown as SVGPathElement
     const nodes = q(`.${styles.node}`) as HTMLElement[]
-    const sub = q(`.${styles.sub}`)[0] as HTMLElement
-    const note = q(`.${styles.note}`)[0] as HTMLElement
-
-    const len = path.getTotalLength()
+    const sub = q(`.${styles.sub}`)
+    const note = q(`.${styles.note}`)
 
     if (reduced) {
-      gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0 })
       gsap.set([...nodes, sub, note], { opacity: 1 })
       gsap.set(q('.maskline > span'), { yPercent: 0 })
       return
     }
 
-    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len })
-
     const tl = gsap.timeline()
-
-    tl.to(path, {
-      strokeDashoffset: 0,
-      duration: DRAW,
-      ease: 'power1.inOut',
-    })
 
     /* Each corner lights as the stroke arrives at it. */
     NODES.forEach((n, i) => {
       tl.fromTo(
         nodes[i],
         { opacity: 0, scale: 0.4 },
-        { opacity: 1, scale: 1, duration: 0.4, ease: 'power3.out' },
+        { opacity: 1, scale: 1, duration: 0.3, ease: 'power3.out' },
         n.at * DRAW
       )
     })
 
-    /* The headline is revealed by the line's own progress, not by a
-       separate schedule — the stroke is the timekeeper. */
+    /* The headline does not wait for the line to finish. It arrives
+       alongside it, so the first screen is settled in well under two
+       seconds. */
     tl.from(
       q('.maskline > span'),
-      { yPercent: 115, duration: 1.05, stagger: 0.11, ease: 'power4.out' },
-      0.42 * DRAW
+      { yPercent: 115, duration: 0.85, stagger: 0.1, ease: 'power4.out' },
+      0.28
     )
-      .to(sub, { opacity: 1, duration: 0.8 }, 0.62 * DRAW)
-      .to(note, { opacity: 1, duration: 0.8 }, 0.94 * DRAW)
-
-    /* The stroke leans very slightly toward the cursor. Enough to feel
-       alive; not enough to notice as an effect. */
-    const mx = gsap.quickTo(svg, 'x', { duration: 0.9, ease: 'power3' })
-    const my = gsap.quickTo(svg, 'y', { duration: 0.9, ease: 'power3' })
-
-    const onMove = (e: PointerEvent) => {
-      mx((e.clientX / window.innerWidth - 0.5) * 12)
-      my((e.clientY / window.innerHeight - 0.5) * 12)
-    }
-    const onLeave = () => {
-      mx(0)
-      my(0)
-    }
-
-    scope.addEventListener('pointermove', onMove)
-    scope.addEventListener('pointerleave', onLeave)
+      .to(sub, { opacity: 1, duration: 0.6 }, 0.85)
+      .to(note, { opacity: 1, duration: 0.6 }, 1.15)
 
     return () => {
-      scope.removeEventListener('pointermove', onMove)
-      scope.removeEventListener('pointerleave', onLeave)
+      ScrollTrigger.getAll().forEach((t) => t.kill())
     }
   }, [])
 
@@ -105,16 +79,9 @@ export default function Line({ flow = false }: { flow?: boolean }) {
       className={`${styles.root} ${flow ? styles.rootFlow : ''}`}
       ref={root}
     >
-      <Chrome tone="dark" showFooter={false} />
+      <Spine d={SPINE} mode="intro" duration={DRAW} />
 
-      <svg
-        className={styles.svg}
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <path className={styles.path} d={PATH} />
-      </svg>
+      <Chrome tone="dark" showFooter={false} />
 
       {NODES.map((n) => (
         <span
@@ -138,15 +105,14 @@ export default function Line({ flow = false }: { flow?: boolean }) {
           </span>
         </h1>
         <p className={`${styles.sub} label`}>One vision. Every connection.</p>
+        <span className={`${styles.note} label`}>
+          The line never lifts — it runs the whole page ↓
+        </span>
       </div>
 
       <div className={styles.foot}>
         <span className="label">India — 2026</span>
       </div>
-
-      <span className={`${styles.note} label`}>
-        The line never lifts — it runs the whole page ↓
-      </span>
     </div>
   )
 }

@@ -54,7 +54,17 @@
   top: 0;
   height: 100%;
   width: 16.6667%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   will-change: transform;
+}
+
+/* Each maker's work, sitting in their own panel. Without these the
+   panels read as empty image slots, which is the one thing this brand
+   cannot afford — there is no photography to put in them. */
+.work {
+  width: min(66%, 98px);
 }
 
 .panelName {
@@ -65,6 +75,16 @@
   opacity: 0;
   white-space: nowrap;
   font-size: 0.5625rem;
+}
+
+/* What they delivered, under who they were. Names the object in the
+   panel so it is never a decorative glyph. */
+.panelMade {
+  display: block;
+  margin-top: calc(var(--u) * 0.75);
+  color: var(--grey-40);
+  letter-spacing: 0.14em;
+  text-transform: none;
 }
 
 /* ---- the joins -------------------------------------------------- */

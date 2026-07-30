@@ -1,5 +1,6 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { useGsap } from '../../../lib/useGsap'
+import PixelIcon from '../../../components/PixelIcon'
 import Spine from '../../../components/Spine'
 import styles from './Seams.module.css'
 
@@ -10,17 +11,19 @@ import styles from './Seams.module.css'
    at 66vh, which is y=594 in this stretched 900-unit space. */
 const SPINE = 'M 84 -60 V 594 H 1356 V 960'
 
-/* Six almost-identical off-whites. Every one of them was signed off as
-   correct, and no two of them match — which is how this actually fails
-   in the real world, rather than in a diagram. */
+/* Six off-whites that do not match. The spread is deliberately wide
+   enough to SEE — an earlier pass held them within 5% lightness, which
+   made the mismatch carrying the whole argument invisible and left the
+   panels reading as empty image slots.
+   Each panel also holds the thing that maker actually delivered. */
 const PANELS = [
-  { by: 'Brand agency', tone: '#edede9' },
-  { by: 'Website agency', tone: '#e8e7e2' },
-  { by: 'Interior designer', tone: '#f1f0ec' },
-  { by: 'Marketing team', tone: '#e5e4df' },
-  { by: 'Technology partner', tone: '#efeeea' },
-  { by: 'Growth consultant', tone: '#eae9e3' },
-]
+  { by: 'Brand agency', made: 'the sign', tone: '#f4f3ef', icon: 'sign' },
+  { by: 'Website agency', made: 'the website', tone: '#e2e1db', icon: 'browser' },
+  { by: 'Interior designer', made: 'the room', tone: '#efeee9', icon: 'chair' },
+  { by: 'Marketing team', made: 'the ads', tone: '#d9d8d2', icon: 'horn' },
+  { by: 'Technology partner', made: 'the booking', tone: '#eae9e3', icon: 'terminal' },
+  { by: 'Growth consultant', made: 'the emails', tone: '#dedcd6', icon: 'chart' },
+] as const
 
 /* Gaps measured in the currency they actually failed in. */
 const SEAMS = ['3 emails', '2 weeks', '1 assumption', 'nobody asked', 'a different month']
@@ -49,9 +52,11 @@ export default function Seams() {
     const crossNote = q(`.${styles.crossNote}`)
     const head = q(`.${styles.head}`)
     const close = q(`.${styles.close}`)
+    const pixels = Array.from(scope.querySelectorAll('[data-px]'))
 
     if (reduced) {
       gsap.set([seams, ticks, notes, crossNote, head], { opacity: 1 })
+      gsap.set(pixels, { scale: 1, opacity: 1 })
       return
     }
 
@@ -73,6 +78,21 @@ export default function Seams() {
       tl.to(p, { x: spread, duration: 1.4, ease: 'power2.inOut' }, 0.4)
         .to(names[i], { opacity: 1, duration: 0.5 }, 0.9 + i * 0.08)
     })
+
+    /* As the pieces come apart, what each maker actually built resolves
+       inside their panel — cell by cell, in no particular order, the way
+       a low-resolution thing arrives. */
+    tl.from(
+      pixels,
+      {
+        scale: 0,
+        opacity: 0,
+        duration: 0.45,
+        ease: 'power2.out',
+        stagger: { amount: 1.25, from: 'random' },
+      },
+      0.7
+    )
 
     /* And then it closes again — and the joins do not go away. */
     panels.forEach((p) => {
@@ -126,7 +146,11 @@ export default function Seams() {
               className={styles.panel}
               style={{ left: `${i * 16.6667}%`, background: p.tone }}
             >
-              <span className={`${styles.panelName} label`}>{p.by}</span>
+              <PixelIcon name={p.icon} className={styles.work} />
+              <span className={`${styles.panelName} label`}>
+                {p.by}
+                <span className={styles.panelMade}>{p.made}</span>
+              </span>
             </div>
           ))}
 

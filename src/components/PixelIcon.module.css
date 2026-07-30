@@ -1,0 +1,23 @@
+.icon {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* The thrown copy. Mid grey so it reads as a bevel on a near-white
+   panel without becoming a second silhouette. */
+.extrude {
+  fill: var(--grey-60);
+}
+
+.face {
+  fill: var(--ink);
+}
+
+/* Each cell scales about its own centre, which SVG will not do without
+   being told where the box is. */
+.px {
+  transform-box: fill-box;
+  transform-origin: center;
+}

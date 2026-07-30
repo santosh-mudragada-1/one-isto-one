@@ -15,23 +15,6 @@
   height: 100dvh;
 }
 
-.svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  will-change: transform;
-}
-
-.path {
-  fill: none;
-  stroke: var(--grey-40);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
 /* Nodes are HTML rather than SVG so they stay perfect squares — the
    path is stretched to the viewport, but the colon square never is. */
 .node {
@@ -77,15 +60,11 @@
   pointer-events: none;
 }
 
-/* Centred rather than right-aligned so it never runs into the concept
-   switcher parked in the bottom-right corner. */
+/* Sits with the content it belongs to. It was bottom-centred, which put
+   it straight underneath the page's own scroll cue. */
 .note {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: calc(var(--u) * 4.5);
+  display: block;
+  margin-top: calc(var(--u) * 2);
   color: var(--grey-40);
   opacity: 0;
-  pointer-events: none;
-  white-space: nowrap;
 }

@@ -6,6 +6,12 @@ type Props = {
   /** Path authored in a 1440×900 space and stretched to the viewport,
    *  so y is a percentage of viewport height: 450 = 50vh, 594 = 66vh. */
   d: string
+  /** `scroll` scrubs with the section — for anything that is travelled.
+   *  `intro` draws once on load, for a section that does not scroll. */
+  mode?: 'scroll' | 'intro'
+  /** Intro only. Kept short: a visitor who scrolls before the stroke
+   *  has finished should never meet a line that starts mid-air. */
+  duration?: number
 }
 
 /**
@@ -23,17 +29,10 @@ type Props = {
  * holds its content still while the document scrolls, so the line has
  * to be drawn in viewport space and driven by that section's progress.
  */
-export default function Spine({ d }: Props) {
+export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
   const root = useGsap<HTMLDivElement>((scope) => {
-    const svg = scope.querySelector('svg')
     const path = scope.querySelector('path')
-    if (!svg || !path) return
-
-    /* Scrubbed by the section this belongs to, not by the document —
-       `html` is height:100%, so as a trigger it measures one viewport
-       and the stroke would never advance. */
-    const trigger = scope.closest('section') ?? scope.parentElement
-    if (!trigger) return
+    if (!path) return
 
     const len = (path as SVGPathElement).getTotalLength()
 
@@ -42,8 +41,22 @@ export default function Spine({ d }: Props) {
       return
     }
 
-    void svg
     gsap.set(path, { strokeDasharray: len, strokeDashoffset: len })
+
+    if (mode === 'intro') {
+      const tween = gsap.to(path, {
+        strokeDashoffset: 0,
+        duration,
+        ease: 'power2.inOut',
+      })
+      return () => tween.kill()
+    }
+
+    /* Scrubbed by the section this belongs to, not by the document —
+       `html` is height:100%, so as a trigger it measures one viewport
+       and the stroke would never advance. */
+    const trigger = scope.closest('section') ?? scope.parentElement
+    if (!trigger) return
 
     const tween = gsap.to(path, {
       strokeDashoffset: 0,
@@ -65,7 +78,7 @@ export default function Spine({ d }: Props) {
       tween.kill()
       ScrollTrigger.refresh()
     }
-  }, [d])
+  }, [d, mode])
 
   return (
     <div className={styles.field} ref={root} aria-hidden="true">
