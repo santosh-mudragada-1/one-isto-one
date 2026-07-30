@@ -1,6 +1,6 @@
 import Line from './hero/Line/Line'
 import Seams from './problem/Seams/Seams'
-import SecondLine from './answer/SecondLine/SecondLine'
+import FocusList from './answer/FocusList/FocusList'
 
 /**
  * THE PAGE
@@ -22,7 +22,7 @@ export default function Assembled() {
     <>
       <Line flow />
       <Seams />
-      <SecondLine />
+      <FocusList />
     </>
   )
 }

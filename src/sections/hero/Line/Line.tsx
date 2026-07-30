@@ -1,6 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../../lib/gsap'
 import { useGsap } from '../../../lib/useGsap'
-import Chrome from '../../../components/Chrome'
 import Spine from '../../../components/Spine'
 import styles from './Line.module.css'
 
@@ -8,7 +7,7 @@ import styles from './Line.module.css'
    at x=84, which is where Section 02 picks it up — the same component,
    the same stroke, the same coordinate space. One line, drawn in
    stretches, not a new line per section. */
-const SPINE = 'M 84 -60 V 300 H 1356 V 620 H 84 V 960'
+const SPINE = 'M 84 -10 V 300 H 1356 V 620 H 84 V 1160'
 
 /* Where the stroke turns, as a fraction of its own length — used to
    pop each node at the moment the line reaches it. */
@@ -76,10 +75,9 @@ export default function Line({ flow = false }: { flow?: boolean }) {
     <div
       className={`${styles.root} ${flow ? styles.rootFlow : ''}`}
       ref={root}
+      data-surface="dark"
     >
       <Spine d={SPINE} mode="intro" duration={DRAW} />
-
-      <Chrome tone="dark" showFooter={false} />
 
       {NODES.map((n) => (
         <span

@@ -11,6 +11,7 @@ import SignOff from './problem/SignOff/SignOff'
 import Seams from './problem/Seams/Seams'
 
 import SecondLine from './answer/SecondLine/SecondLine'
+import FocusList from './answer/FocusList/FocusList'
 
 /** `final` ships. `reference` is kept deliberately, not left behind. */
 export type Status = 'final' | 'reference'
@@ -137,9 +138,19 @@ export const SECTIONS: Section[] = [
         name: 'The Second Line',
         signature:
           'A second stroke arrives, matches pace, and never leaves — the five are where they are tied together.',
-        status: 'final',
+        status: 'reference',
         scrolls: true,
         Component: SecondLine,
+      },
+      {
+        id: 'focus-list',
+        num: '02',
+        name: 'The Focus List',
+        signature:
+          'Focus travels the five; whatever is in focus scales up and opens a gap in its own name.',
+        status: 'final',
+        scrolls: true,
+        Component: FocusList,
       },
     ],
   },

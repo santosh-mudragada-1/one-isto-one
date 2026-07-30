@@ -21,17 +21,19 @@
   padding: calc(var(--u) * 6) var(--gutter);
 }
 
+/* At the foot, not the head. The nav is persistent now and owns the
+   top-left corner of every section. */
 .eyebrow {
   position: absolute;
   left: var(--content-left);
-  top: calc(var(--u) * 6);
+  bottom: calc(var(--u) * 5);
   color: var(--grey-40);
 }
 
 .head {
   position: absolute;
   left: var(--content-left);
-  top: calc(var(--u) * 11);
+  top: calc(var(--u) * 13);
   margin: 0;
   max-width: 14ch;
   opacity: 0;

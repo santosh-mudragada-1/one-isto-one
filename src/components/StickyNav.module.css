@@ -1,0 +1,12 @@
+/* Height zero so it takes no layout space; TopBar's own bar is absolute
+   and positions itself against this. Above the spine (20), below the
+   curtain (90) and the switcher (100). */
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  z-index: 60;
+  pointer-events: none;
+}

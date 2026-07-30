@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from './lib/gsap'
+import StickyNav from './components/StickyNav'
 import VersionFab from './components/VersionFab'
 import Assembled from './sections/Assembled'
 import { SECTIONS, defaultPosition } from './sections'
@@ -93,6 +94,8 @@ export default function App() {
 
   return (
     <>
+      <StickyNav />
+
       <main className={styles.stage}>
         {assembled ? (
           <Assembled key={`page-${take}`} />
