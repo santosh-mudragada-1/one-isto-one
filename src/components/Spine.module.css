@@ -1,40 +1,27 @@
-/* The viewBox runs -300 to 2000 rather than 0 to 900, and the svg box is
-   enlarged to match so one unit still equals 100dvh/900.
-
-   This is the fix for strokes vanishing at section joins: an outermost
-   <svg> clips to its own viewBox and `overflow: visible` does not
-   reliably change that, so a lead-in above a section's top and a tail
-   below its bottom were never drawn — and the line broke wherever two
-   sections met. Nothing falls outside the box now. */
-/* Starts 300 units ABOVE its section. The headroom has to come from
-   layout, not from sticky: a sticky element only takes its offset while
-   it is stuck, so before a section pins, the svg sat at its field's top
-   and the whole band rendered 300px low — which is the hero's frame
-   dropping, and Section 02's line only snapping into place once it
-   pinned. With the field itself lifted, both states agree. */
+/* The svg is sized and offset from JS in real pixels, 1:1 with the
+   screen. A viewBox would scale x by width and y by height, and those
+   are almost never equal — which with a dashed stroke makes the dash
+   length direction-dependent and the draw stop short of its own path. */
 .field {
   position: absolute;
-  top: calc(100dvh * -300 / 900);
   bottom: 0;
   left: 0;
   right: 0;
   pointer-events: none;
 }
 
-/* Sticky directly, with a NEGATIVE offset, rather than an oversized svg
-   inside a sticky wrapper. A wrapper would be a stacking context, and
-   that traps two things at once: the z-index that lifts the stroke above
-   the section's pinned content, and mix-blend-mode, which can only see
-   the backdrop inside its own group and so would stop inverting on a
-   light ground. Kept flat, both keep working. */
+/* Sticky directly, not inside a sticky wrapper. A wrapper is a stacking
+   context, and that traps mix-blend-mode — which can only see the
+   backdrop inside its own group, so the stroke would stop inverting on a
+   light ground. The headroom comes from the field's own offset rather
+   than from this `top`, because a sticky offset only applies while the
+   element is actually stuck. */
 .spine {
   position: sticky;
-  top: calc(100dvh * -300 / 900);
+  top: 0;
   left: 0;
   display: block;
   width: 100%;
-  height: calc(100dvh * 2300 / 900);
-  z-index: 20;
   mix-blend-mode: difference;
 }
 
@@ -42,5 +29,4 @@
   fill: none;
   stroke: var(--paper);
   stroke-width: 1;
-  vector-effect: non-scaling-stroke;
 }
