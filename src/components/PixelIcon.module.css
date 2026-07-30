@@ -6,13 +6,17 @@
 }
 
 /* The thrown copy. Mid grey so it reads as a bevel on a near-white
-   panel without becoming a second silhouette. */
+   panel without becoming a second silhouette.
+
+   Both fills are overridable, because these objects sit on three
+   different grounds: light sections, the near-white panels inside a
+   dark section, and — in the closing section — straight onto ink. */
 .extrude {
-  fill: var(--grey-60);
+  fill: var(--px-edge, var(--grey-60));
 }
 
 .face {
-  fill: var(--ink);
+  fill: var(--px-face, var(--ink));
 }
 
 /* Each cell scales about its own centre, which SVG will not do without
@@ -20,4 +24,36 @@
 .px {
   transform-box: fill-box;
   transform-origin: center;
+}
+
+/* ---- hover ---------------------------------------------------------
+   The object re-resolves, one diagonal of cells at a time, the way a
+   low-resolution thing arrives. `--i` is x+y, so the sweep runs on the
+   45° of the mark's own chamfer rather than straight across.
+
+   CSS rather than JS: there can be a dozen of these on one screen and
+   a hover must never cost a tween. */
+@keyframes resolve {
+  0% {
+    transform: scale(1);
+  }
+  38% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.icon:hover .px,
+[data-icon-live] .px {
+  animation: resolve 0.5s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 14ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon:hover .px,
+  [data-icon-live] .px {
+    animation: none;
+  }
 }

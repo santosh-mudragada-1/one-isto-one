@@ -9,15 +9,11 @@ const INTRO = 1.15
 /** Where the head aims, in screens below the top of the window. Past
  *  the fold, never short of it — so once the stroke has caught up it
  *  always runs off the bottom edge rather than stopping at it. */
-const LEAD = 0.8
-/** And how far short of the fold it is EVER allowed to be, however
- *  hard the page is thrown. Without this the trail is a function of
- *  scroll speed, and a hard flick opens most of a screen — which is
- *  the one thing this line is not allowed to do. With it, the trail
- *  is a fixed sliver at the very bottom that closes the moment you
- *  stop, and it can only ever appear at a section boundary, because
- *  nowhere else does the line move at all. */
-const BRINK = 0.72
+const LEAD = 0.06
+/** The most the chase is ever allowed to fall behind the head, in
+ *  screens. Without it the trail is a function of scroll speed and a
+ *  hard flick opens a whole screen of nothing. */
+const SLACK = 0.2
 /** How much of the remaining ground the head makes up per frame at
  *  60fps. This is the whole reason the stroke reads as being DRAWN
  *  into a section rather than already waiting there: when the page
@@ -96,9 +92,9 @@ export default function Spine() {
     const reduced = prefersReducedMotion()
 
     let pins: Array<{ a: number; b: number }> = []
-    /** Real scroll → how far along the line the head should be, one
-     *  section at a time. See `aim`. */
-    let pace: Array<{ s0: number; s1: number; v0: number; v1: number }> = []
+    /** Real scroll → where the head should have reached, one section
+     *  at a time. See `target`. */
+    let pace: Array<{ s0: number; s1: number; t0: number; t1: number }> = []
     let segs: Seg[] = []
     let nodes: Node[] = []
     /** What the stroke finally lands on, if anything does. */
@@ -137,24 +133,25 @@ export default function Spine() {
     }
 
     /**
-     * Where the head should be, in the line's own space.
+     * Where the head should have reached, in the line's own space.
      *
      * NOT `virtual`. Virtual scroll is frozen while a section holds
-     * its screen still — correct for placing the line, useless for
+     * its screen still — right for placing the line, useless for
      * pacing it, because the head would freeze too and the stroke
      * would simply be there. So each section's stretch of line is
      * spent across that section's real scroll instead: it draws in as
-     * you come into a section, and un-draws as you go back up.
+     * you come down through a section and un-draws as you go back up,
+     * and it runs out exactly as the section does.
      */
-    const aim = (s: number) => {
-      if (!pace.length) return virtual(s)
-      if (s <= pace[0].s0) return pace[0].v0
+    const target = (s: number) => {
+      if (!pace.length) return virtual(s) + window.innerHeight
+      if (s <= pace[0].s0) return pace[0].t0
       for (const p of pace) {
         if (s >= p.s1) continue
         const span = p.s1 - p.s0
-        return span > 0 ? p.v0 + ((s - p.s0) / span) * (p.v1 - p.v0) : p.v1
+        return span > 0 ? p.t0 + ((s - p.s0) / span) * (p.t1 - p.t0) : p.t1
       }
-      return pace[pace.length - 1].v1
+      return pace[pace.length - 1].t1
     }
 
     /** How much of the stroke has been reached by the time the line
@@ -268,14 +265,27 @@ export default function Spine() {
         return
       }
 
-      /* One section of line per section of page. */
+      /* One section of line per section of page, and the head is
+         given a head start of exactly the amount it will lose to the
+         pin: a section that holds its screen for (height - unit) of
+         scrolling ends with its head one screen further down than it
+         started, so starting it `unit/height` of a screen down puts
+         the tip on the bottom edge at the moment the section runs
+         out — and never before.
+
+         The Hero is the same rule with nothing subtracted, because it
+         holds nothing: height === unit, so its lead is a full screen
+         and its stroke is complete the instant it has drawn. */
+      const lead = (r: (typeof rows)[number]) =>
+        virtual(r.top) + (LEAD + r.unit / Math.max(r.unit, r.height)) * r.unit
+
       rows.forEach((r, i) => {
         const next = rows[i + 1]
         pace.push({
           s0: r.top,
           s1: next ? next.top : Math.max(r.top + 1, limit),
-          v0: virtual(r.top),
-          v1: next ? virtual(next.top) : virtual(limit) + r.unit,
+          t0: lead(r),
+          t1: next ? lead(next) : virtual(limit) + (1 + LEAD) * r.unit,
         })
       })
 
@@ -366,10 +376,7 @@ export default function Spine() {
          off screen. */
       if (approach && segs.length) approach.from = len - segs[segs.length - 1].len
 
-      head = Math.min(
-        len,
-        lengthAt(aim(gsap.utils.clamp(0, limit, window.scrollY)) + vh * LEAD)
-      )
+      head = Math.min(len, lengthAt(target(gsap.utils.clamp(0, limit, window.scrollY))))
 
       if (reduced) {
         path.style.strokeDasharray = 'none'
@@ -440,13 +447,11 @@ export default function Spine() {
       }
       if (reduced || !len) return
 
-      const fold = vh * LEAD
-
       /* A pure function of where the page is — not a one-way
          animation. Scroll back and the head comes back with you: the
          stroke is drawn by your journey, so it un-draws when you
          retrace it. */
-      head = Math.min(len, lengthAt(aim(scroll) + fold))
+      head = Math.min(len, lengthAt(target(scroll)))
 
       /* The last move is spent across the closing section rather than
          given away early, so the stroke lands as the page ends. */
@@ -477,10 +482,10 @@ export default function Spine() {
             : drawn + gap * (1 - Math.pow(1 - CHASE, delta / 16.667))
       }
 
-      /* However far behind the chase has fallen, the stroke still
-         covers the window down to here. This is a floor, not a
-         target: it can only ever raise the head. */
-      const least = Math.min(head, lengthAt(v + vh * BRINK))
+      /* The chase may trail — that is what makes the stroke read as
+         being drawn — but only ever by this much, whatever speed the
+         page is thrown at. */
+      const least = head - vh * SLACK
       if (drawn < least) drawn = least
 
       if (drawn === state.drawn) return

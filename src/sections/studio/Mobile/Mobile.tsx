@@ -4,31 +4,40 @@ import { useGsap } from '../../../lib/useGsap'
 import PixelIcon, { type IconName } from '../../../components/PixelIcon'
 import styles from './Mobile.module.css'
 
-/* Six things a customer meets. One word each — the word is the whole
-   label, because a caption explaining a sign is worse than no sign. */
+/* Six things a customer meets on one visit. One word each — a caption
+   explaining a door is worse than no door. */
 const HUNG: Array<{ icon: IconName; name: string }> = [
-  { icon: 'sign', name: 'Sign' },
-  { icon: 'browser', name: 'Site' },
-  { icon: 'chair', name: 'Room' },
-  { icon: 'horn', name: 'Ads' },
-  { icon: 'terminal', name: 'Booking' },
-  { icon: 'chart', name: 'Email' },
+  { icon: 'door', name: 'Door' },
+  { icon: 'phone', name: 'Phone' },
+  { icon: 'cutlery', name: 'Menu' },
+  { icon: 'bell', name: 'Service' },
+  { icon: 'receipt', name: 'Receipt' },
+  { icon: 'envelope', name: 'Email' },
 ]
 
-/** How far the whole thing can swing, in degrees. */
-const SWING = 7
+/** How far the row can bow, in px, at full speed. */
+const BOW = 78
+/** Scroll speed, in px/s, that bows it that far. */
+const FULL = 2600
+/** How quickly the bow settles back to straight. */
+const SETTLE = 0.055
+/** Humps across the row. Two, so both ends stay on the line. */
+const WAVES = 2
 
 /**
  * 05 · 02 — MOVE ONE
  *
- * Signature: the mobile. The six things hang off the spine — the
- * customer's own line — and the visitor can push them. Push any one of
- * them and all six move, together, in formation, because they are not
- * six things. They are one thing.
+ * Signature: the row bends, the line does not.
  *
- * That is the studio's entire proposition, and nobody has to read it:
- * you cannot move one of these on its own, and after two seconds of
- * trying you know why that matters.
+ * Six things a customer meets hang off the spine — the customer's own
+ * stroke — and the faster the page is scrolled the further the row of
+ * them bows away from it, in one wave, before settling back. They are
+ * on one thread: you cannot move any of them on their own, and after
+ * two seconds of trying you know why that matters.
+ *
+ * The stroke itself never bends. It is the one thing here that holds
+ * its shape, which is the entire proposition of the studio and needs
+ * no sentence under it.
  */
 export default function Mobile() {
   const root = useGsap<HTMLElement>((scope) => {
@@ -36,7 +45,6 @@ export default function Mobile() {
     const reduced = prefersReducedMotion()
     const chars = headingChars(scope)
 
-    const pin = q(`.${styles.pin}`)[0] as HTMLElement
     const rig = q(`.${styles.rig}`)[0] as HTMLElement
     const drops = q(`.${styles.drop}`) as HTMLElement[]
     const things = q(`.${styles.thing}`) as HTMLElement[]
@@ -49,25 +57,37 @@ export default function Mobile() {
       return
     }
 
-    /* Everything hangs from one pivot ON the line, so there is exactly
-       one transform. Six pendulums would let them drift apart, and the
-       whole point is that they cannot. */
-    const turn = gsap.quickTo(rig, 'rotate', { duration: 0.9, ease: 'elastic.out(1, 0.42)' })
-    let nudged = false
+    /* Thread lengths are staggered, so each one has to be measured
+       before it can be stretched by the wave. */
+    const base = drops.map((d) => d.offsetHeight || 1)
+    let bow = 0
+    let seen = window.scrollY
+    let cued = false
 
-    const onMove = (e: PointerEvent) => {
-      const box = pin.getBoundingClientRect()
-      const off = (e.clientX - (box.left + box.width / 2)) / (box.width / 2)
-      turn(gsap.utils.clamp(-1, 1, off) * SWING)
-      if (!nudged) {
-        nudged = true
+    const wave = () => {
+      /* Speed, smoothed. A wave that tracked raw scroll delta would
+         flicker at every frame boundary. */
+      const now = window.scrollY
+      const speed = (now - seen) * 60
+      seen = now
+      const want = gsap.utils.clamp(-1, 1, speed / FULL) * BOW
+      bow += (want - bow) * (Math.abs(want) > Math.abs(bow) ? 0.28 : SETTLE)
+
+      if (Math.abs(bow) < 0.05) return
+      things.forEach((el, i) => {
+        const t = things.length > 1 ? i / (things.length - 1) : 0
+        const off = Math.sin(t * Math.PI * WAVES) * bow
+        el.style.transform = `translateY(${off.toFixed(2)}px)`
+        drops[i].style.transform = `scaleY(${(1 + off / base[i]).toFixed(4)})`
+      })
+
+      if (!cued && Math.abs(bow) > BOW * 0.35) {
+        cued = true
         gsap.to(cue, { opacity: 0, duration: 0.5 })
       }
     }
-    const onLeave = () => turn(0)
 
-    pin.addEventListener('pointermove', onMove)
-    pin.addEventListener('pointerleave', onLeave)
+    gsap.ticker.add(wave)
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -80,24 +100,21 @@ export default function Mobile() {
 
     tl.from(chars, { ...HEADING_REVEAL }, 0)
 
-    /* They are lowered onto the line one at a time — the drop first,
-       then the thing on the end of it. */
+    /* Lowered onto the line one at a time — the thread first, then the
+       thing on the end of it. */
     HUNG.forEach((_, i) => {
       const at = 0.9 + i * 0.34
       tl.to(drops[i], { scaleY: 1, duration: 0.45, ease: 'power2.out' }, at)
-        .to(things[i], { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, at + 0.12)
+        .to(things[i], { opacity: 1, duration: 0.5, ease: 'power3.out' }, at + 0.12)
     })
 
     tl.to(cue, { opacity: 1, duration: 0.6 }, 0.9 + HUNG.length * 0.34)
-
-    /* A touch screen has no pointer to push with, so the page's own
-       movement does the pushing instead. */
-    tl.to(rig, { rotate: -SWING * 0.5, duration: 3, ease: 'sine.inOut' }, 3.4)
-      .to(rig, { rotate: 0, duration: 3, ease: 'sine.inOut' }, 6.4)
+      /* The whole row travels a little, so the six are passing along
+         the line rather than parked on it. */
+      .fromTo(rig, { xPercent: 4 }, { xPercent: -4, ease: 'none', duration: 9 }, 0)
 
     return () => {
-      pin.removeEventListener('pointermove', onMove)
-      pin.removeEventListener('pointerleave', onLeave)
+      gsap.ticker.remove(wave)
       ScrollTrigger.getAll().forEach((t) => t.kill())
     }
   }, [])
@@ -134,7 +151,7 @@ export default function Mobile() {
           ))}
         </div>
 
-        <span className={`${styles.cue} label`}>Push it</span>
+        <span className={`${styles.cue} label`}>Scroll harder</span>
       </div>
     </section>
   )

@@ -114,3 +114,57 @@
     --content-left: calc(13.889% + var(--u) * 1.5);
   }
 }
+
+/* ---- everything a customer touches, dropped ----------------------
+   The one unserious thing on the site, and it is in the right place:
+   a studio with no work to show has to be worth talking to, and this
+   is the screen where someone decides whether to write.
+
+   The stage sits UNDER the type — the falling objects must never make
+   the address hard to read — and takes no pointer events, so the
+   email link still works with the cursor raining icons. */
+
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.block,
+.eyebrow {
+  z-index: 1;
+}
+
+/* Cloned from, never shown. */
+.repo {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.seed,
+.fell {
+  display: block;
+  width: clamp(32px, 3.6vw, 56px);
+}
+
+/* Straight onto ink here, so the objects invert: paper faces, a grey
+   bevel. Everywhere else they sit on something pale and stay dark. */
+.fell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  --px-face: var(--paper);
+  --px-edge: var(--grey-40);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    display: none;
+  }
+}

@@ -40,9 +40,10 @@
 }
 
 /* ---- the rig -----------------------------------------------------
-   One element, one transform. The pivot is ON the line at 60%, so the
-   whole set swings from the customer's own stroke — and nothing in it
-   can move without the rest. */
+   Hung from the line at 60%. Nothing here rotates: the row bows, in
+   one wave, and the threads stretch to reach it — so the bend is
+   visibly something happening TO the things and never to the stroke
+   they hang from. */
 
 .rig {
   position: absolute;
@@ -53,7 +54,6 @@
   justify-content: center;
   align-items: flex-start;
   gap: clamp(1.75rem, 5.5vw, 5.5rem);
-  transform-origin: 50% 0;
   will-change: transform;
 }
 
@@ -86,7 +86,7 @@
   align-items: center;
   gap: calc(var(--u) * 1.5);
   opacity: 0;
-  transform: translateY(-0.6em);
+  will-change: transform;
 }
 
 .glyph {
