@@ -6,7 +6,7 @@ import styles from './SecondLine.module.css'
 /* The customer's line, continuing. It leaves Section 02 at x=1290 and
    here it simply descends — no turn, no flourish. This section is the
    calm one, and the line behaving plainly is part of that. */
-const SPINE = 'M 1290 -10 V 1160'
+const SPINE = 'M 1290 -260 V 2000'
 
 /* Five ties, not five services. Each one names a place where the two
    lines are held together, and answers — quietly — one of the five
@@ -121,8 +121,6 @@ export default function SecondLine() {
 
   return (
     <section className={styles.root} data-surface="light" ref={root}>
-      <Spine d={SPINE} />
-
       <div className={styles.pin}>
         <span className={`${styles.eyebrow} label`}>03 — What we do</span>
 
@@ -158,6 +156,9 @@ export default function SecondLine() {
           Holding it is the easy half.
         </h3>
       </div>
+
+      {/* Last, so it paints over this section's own content. */}
+      <Spine d={SPINE} />
     </section>
   )
 }

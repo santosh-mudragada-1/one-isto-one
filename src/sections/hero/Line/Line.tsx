@@ -77,8 +77,6 @@ export default function Line({ flow = false }: { flow?: boolean }) {
       ref={root}
       data-surface="dark"
     >
-      <Spine d={SPINE} mode="intro" duration={DRAW} />
-
       {NODES.map((n) => (
         <span
           key={`${n.left}-${n.top}`}
@@ -102,6 +100,9 @@ export default function Line({ flow = false }: { flow?: boolean }) {
         </h1>
         <p className={`${styles.sub} label`}>One vision. Every connection.</p>
       </div>
+
+      {/* Last, so it paints over this section's own content. */}
+      <Spine d={SPINE} mode="intro" duration={DRAW} />
     </div>
   )
 }

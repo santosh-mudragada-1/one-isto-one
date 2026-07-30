@@ -41,14 +41,30 @@ export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
       return
     }
 
-    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len })
+    /* Any part of the path above its own section's top is drawn before
+       the section is reached. A section's stroke is driven by its own
+       progress, so at a join the incoming one has barely started —
+       waiting for it to reach the boundary leaves a visible break, and
+       relying on the previous section's tail to overhang means the join
+       depends on a neighbour rendering outside its own box. Pre-drawing
+       the lead-in makes the overlap structural instead. */
+    const p = path as SVGPathElement
+    let lead = 0
+    for (let l = 0; l <= len; l += 4) {
+      if (p.getPointAtLength(l).y >= 0) {
+        lead = l
+        break
+      }
+    }
+
+    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len - lead })
 
     if (mode === 'intro') {
-      const tween = gsap.to(path, {
-        strokeDashoffset: 0,
-        duration,
-        ease: 'power2.inOut',
-      })
+      const tween = gsap.fromTo(
+        path,
+        { strokeDashoffset: len },
+        { strokeDashoffset: 0, duration, ease: 'power2.inOut' }
+      )
       return () => tween.kill()
     }
 
@@ -84,7 +100,7 @@ export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
     <div className={styles.field} ref={root} aria-hidden="true">
       <svg
         className={styles.spine}
-        viewBox="0 0 1440 900"
+        viewBox="0 -300 1440 2300"
         preserveAspectRatio="none"
       >
         <path className={styles.path} d={d} />

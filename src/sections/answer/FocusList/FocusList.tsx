@@ -6,7 +6,7 @@ import styles from './FocusList.module.css'
 
 /* The customer's line, continuing. Long tail so it covers the join into
    the next section, whose own stroke has barely started by then. */
-const SPINE = 'M 1290 -10 V 1160'
+const SPINE = 'M 1290 -260 V 2000'
 
 /* Five parts of one experience. Each name is two words, so the thing it
    makes can open a gap in the middle of it. */
@@ -189,8 +189,6 @@ export default function FocusList() {
 
   return (
     <section className={styles.root} data-surface="light" ref={root}>
-      <Spine d={SPINE} />
-
       <div className={styles.pin}>
         <span className={`${styles.eyebrow} label`}>03 — What we do</span>
 
@@ -224,6 +222,9 @@ export default function FocusList() {
           ))}
         </div>
       </div>
+
+      {/* Last, so it paints over this section's own content. */}
+      <Spine d={SPINE} />
     </section>
   )
 }

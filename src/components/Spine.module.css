@@ -1,29 +1,31 @@
-/* Spans the whole section so the stroke inside it can stick for the
-   pinned stretch and scroll away at the end — the same behaviour the
-   section's own pin has. `fixed` cannot do this: it would hang over
-   whichever section happened to be on screen, and it could not travel
-   in with a section that is still arriving, which is exactly where the
-   line has to stay unbroken. */
-/* No z-index here, deliberately. A positioned ancestor with a z-index
-   forms an isolated group, and mix-blend-mode can only see the backdrop
-   inside its own group — so the stroke would blend against nothing and
-   stay paper-coloured, which is invisible on a light section. The
-   stacking belongs on the stroke itself, whose own stacking context
-   does not isolate it from the page behind. */
+/* The viewBox runs -300 to 2000 rather than 0 to 900, and the svg box is
+   enlarged to match so one unit still equals 100dvh/900.
+
+   This is the fix for strokes vanishing at section joins: an outermost
+   <svg> clips to its own viewBox and `overflow: visible` does not
+   reliably change that, so a lead-in above a section's top and a tail
+   below its bottom were never drawn — and the line broke wherever two
+   sections met. Nothing falls outside the box now. */
 .field {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
+/* Sticky directly, with a NEGATIVE offset, rather than an oversized svg
+   inside a sticky wrapper. A wrapper would be a stacking context, and
+   that traps two things at once: the z-index that lifts the stroke above
+   the section's pinned content, and mix-blend-mode, which can only see
+   the backdrop inside its own group and so would stop inverting on a
+   light ground. Kept flat, both keep working. */
 .spine {
   position: sticky;
-  top: 0;
-  z-index: 20;
+  top: calc(100dvh * -300 / 900);
+  left: 0;
   display: block;
   width: 100%;
-  height: 100dvh;
-  overflow: visible;
+  height: calc(100dvh * 2300 / 900);
+  z-index: 20;
   mix-blend-mode: difference;
 }
 
