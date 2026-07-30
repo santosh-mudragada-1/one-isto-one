@@ -77,6 +77,14 @@ export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
       svg.style.top = `${top}px`
       svg.style.height = `${height}px`
       scope.style.top = `${top}px`
+      /* The field must reach BELOW its section by however far the svg
+         hangs past the viewport. A sticky element unsticks as soon as
+         its bottom would leave its containing block — with the field
+         ending at the section's bottom, the svg (which reaches 1100
+         units below the fold) released more than a viewport early and
+         from then on scrolled away with the section. That is the line
+         "moving with the scroll after a point". */
+      scope.style.bottom = `${-(BOTTOM - VH) * sy}px`
       path.setAttribute('d', toPixels(d, sx, sy))
 
       const len = path.getTotalLength()
