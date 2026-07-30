@@ -7,7 +7,7 @@ import styles from './Notebook.module.css'
 /* The line finally does something other than descend. It arrives at
    x=1290 from Section 03, crosses the frame above the heading, and
    settles at 13.9% as the margin rule this page is written against. */
-const SPINE = 'M 1290 -260 V 116 H 200 V 2000'
+const SPINE = 'M 1290 -340 V 116 H 200 V 2000'
 
 /* Four entries. One confident, one they stopped believing, one they
    still hold, one unfinished. The wrong one is the point: nothing else

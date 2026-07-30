@@ -7,7 +7,7 @@ import styles from './SecondLine.module.css'
 /* The customer's line, continuing. It leaves Section 02 at x=1290 and
    here it simply descends — no turn, no flourish. This section is the
    calm one, and the line behaving plainly is part of that. */
-const SPINE = 'M 1290 -260 V 2000'
+const SPINE = 'M 1290 -340 V 2000'
 
 /* Five ties, not five services. Each one names a place where the two
    lines are held together, and answers — quietly — one of the five

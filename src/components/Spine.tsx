@@ -6,9 +6,17 @@ type Props = {
   /** Path authored in a 1440×900 design space: y is a percentage of the
    *  viewport height, so 450 is 50vh and 594 is 66vh. */
   d: string
-  /** `scroll` scrubs with the section — for anything that is travelled.
-   *  `intro` draws once on load, for a section that does not scroll. */
-  mode?: 'scroll' | 'intro'
+  /** `intro` draws once on load — the hero only.
+   *
+   *  Everywhere else the stroke is simply present, fully drawn. That is
+   *  deliberate. Drawing it per-section meant two independent strokes
+   *  had to meet exactly at every boundary, and that contract broke five
+   *  different ways: the viewBox clipped what fell outside it, a wrapper
+   *  isolated the blend, a stacking context trapped the z-index,
+   *  anisotropic scaling corrupted the dash lengths, and sticky released
+   *  a viewport early. With no front to synchronise, overlap is a
+   *  property of the geometry and cannot come apart. */
+  mode?: 'static' | 'intro'
   /** Intro only. Kept short: a visitor who scrolls before the stroke has
    *  finished should never meet a line that starts mid-air. */
   duration?: number
@@ -18,7 +26,7 @@ type Props = {
 const VW = 1440
 const VH = 900
 /** Headroom above a section's top, and reach below its bottom. */
-const TOP = -300
+const TOP = -400
 const BOTTOM = 2000
 
 /**
@@ -54,13 +62,12 @@ function toPixels(d: string, sx: number, sy: number) {
  * holds its content still while the document scrolls, so its line has to
  * live in sticky space and be driven by that section's progress.
  */
-export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
+export default function Spine({ d, mode = 'static', duration = 1.15 }: Props) {
   const root = useGsap<HTMLDivElement>((scope) => {
     const svg = scope.querySelector('svg') as SVGSVGElement | null
     const path = scope.querySelector('path') as SVGPathElement | null
     if (!svg || !path) return
 
-    const trigger = scope.closest('section') ?? scope.parentElement
     let tween: gsap.core.Tween | null = null
 
     const build = () => {
@@ -87,30 +94,11 @@ export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
       scope.style.bottom = `${-(BOTTOM - VH) * sy}px`
       path.setAttribute('d', toPixels(d, sx, sy))
 
-      const len = path.getTotalLength()
-
-      if (prefersReducedMotion()) {
-        gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0 })
-        return
-      }
-
-      /* Whatever sits above the section's own top is drawn before the
-         section is reached, so the overlap at a join is structural
-         rather than a race between one section's tail and the next
-         section's progress. */
-      let lead = 0
-      for (let l = 0; l <= len; l += 4) {
-        if (path.getPointAtLength(l).y >= 0) {
-          lead = l
-          break
-        }
-      }
-
-      tween?.scrollTrigger?.kill()
       tween?.kill()
-      gsap.set(path, { strokeDasharray: len, strokeDashoffset: len - lead })
 
-      if (mode === 'intro') {
+      if (mode === 'intro' && !prefersReducedMotion()) {
+        const len = path.getTotalLength()
+        gsap.set(path, { strokeDasharray: len })
         tween = gsap.fromTo(
           path,
           { strokeDashoffset: len },
@@ -119,20 +107,7 @@ export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
         return
       }
 
-      if (!trigger) return
-      tween = gsap.to(path, {
-        strokeDashoffset: 0,
-        ease: 'none',
-        scrollTrigger: {
-          trigger,
-          /* Starts as the section enters from below rather than once it
-             has topped out, or the stroke has not begun by the time the
-             previous one leaves the bottom of the screen. */
-          start: 'top bottom',
-          end: 'bottom bottom',
-          scrub: 0.6,
-        },
-      })
+      gsap.set(path, { strokeDasharray: 'none', strokeDashoffset: 0 })
     }
 
     build()
@@ -150,7 +125,6 @@ export default function Spine({ d, mode = 'scroll', duration = 1.15 }: Props) {
     return () => {
       window.clearTimeout(id)
       window.removeEventListener('resize', onResize)
-      tween?.scrollTrigger?.kill()
       tween?.kill()
     }
   }, [d, mode])
