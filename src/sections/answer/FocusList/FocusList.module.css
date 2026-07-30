@@ -1,17 +1,15 @@
 /* ============================================================
    03 · 02 — THE FOCUS LIST
 
-   Light ground. The five are read one at a time: whichever is in focus
-   scales up, goes to full ink, and opens a gap in its own name for the
-   thing it makes. The others hold back, grey and small.
-
-   It is a list, but never a menu — you cannot take five at once, so it
-   reads as a sequence you move through.
+   Light ground. The five ride up through the frame on a single track.
+   Nothing appears in place: each name enters from below the fold,
+   scales up as it crosses the centre, then scales back down and leaves
+   before it can reach the heading — which stays put the whole way.
    ============================================================ */
 
 .root {
   position: relative;
-  height: 520vh;
+  height: 560vh;
   background: var(--bg);
   color: var(--fg);
 }
@@ -21,8 +19,6 @@
   top: 0;
   height: 100dvh;
   overflow: hidden;
-  --customer-x: 89.583%;
-  --studio-x: 87.8%;
 }
 
 /* At the foot, clear of the persistent nav. */
@@ -33,40 +29,24 @@
   color: var(--fg-faint);
 }
 
-/* ---- the arrival ------------------------------------------------
-   A single rule crossing the frame to meet the spine. The earlier
-   version ran a second vertical one gap to the left of the spine; with
-   the ties gone there was nothing to read in it, and two hairlines 36px
-   apart at the right edge is noise, not a device. */
-
-.arrive {
-  position: absolute;
-  left: 0;
-  width: var(--customer-x);
-  top: 19%;
-  height: 1px;
-  background: var(--fg-faint);
-  transform: scaleX(0);
-  transform-origin: left center;
-}
-
-/* ---- opening statement ----------------------------------------- */
+/* ---- the statement, which stays ---------------------------------- */
 
 .head {
   position: absolute;
   left: 0;
   right: 0;
-  top: 16%;
+  top: 9%;
   margin: 0;
   text-align: center;
   padding: 0 var(--gutter);
+  z-index: 3;
 }
 
 .blurbs {
   position: absolute;
   left: var(--gutter);
   right: var(--gutter);
-  top: 42%;
+  top: 34%;
   display: flex;
   justify-content: space-between;
   gap: calc(var(--u) * 6);
@@ -84,25 +64,24 @@
   text-align: right;
 }
 
-/* ---- the list --------------------------------------------------- */
+/* ---- the track --------------------------------------------------
+   One element carrying all five. It is translated as a whole, so the
+   names genuinely travel rather than fading in where they will end up. */
 
-.list {
+.track {
   position: absolute;
   left: 0;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(1.1rem, 2.2vh, 2.1rem);
-  opacity: 0;
+  gap: 8vh;
+  will-change: transform;
 }
 
 .item {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,12 +96,13 @@
   text-transform: uppercase;
   line-height: 1;
   color: var(--fg-faint);
-  will-change: transform;
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
 /* The gap the focused name opens in itself for the thing it makes.
-   Width is driven from JS, so it grows and shrinks with focus — the
-   words are pushed apart by the object rather than reflowing around it. */
+   Width is driven from JS, so the words are pushed apart by the object
+   rather than reflowing around it. */
 .slot {
   display: block;
   width: 0;
@@ -136,21 +116,17 @@
   margin: 0 calc(var(--u) * 1);
 }
 
-/* ---- one explanation at a time ---------------------------------- */
-
-.subs {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(var(--u) * 16);
-  height: 1.4em;
-  text-align: center;
-}
+/* ---- one explanation at a time ----------------------------------
+   Absolutely placed inside its own row, so it travels with the name and
+   can never be walked through by the ones behind it. Out of flow, so it
+   does not shift the row heights the track is measured from. */
 
 .sub {
   position: absolute;
-  left: 0;
-  right: 0;
+  top: calc(100% + 0.55em);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
   color: var(--fg-quiet);
   opacity: 0;
 }
@@ -165,15 +141,19 @@
   text-align: center;
   padding: 0 var(--gutter);
   opacity: 0;
+  z-index: 4;
   pointer-events: none;
 }
 
 @media (max-width: 820px) {
   .blurbs {
     flex-direction: column;
-    top: 36%;
+    top: 30%;
   }
   .blurb:last-child {
     text-align: left;
+  }
+  .track {
+    gap: 7vh;
   }
 }
