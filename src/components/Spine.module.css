@@ -6,9 +6,18 @@
    reliably change that, so a lead-in above a section's top and a tail
    below its bottom were never drawn — and the line broke wherever two
    sections met. Nothing falls outside the box now. */
+/* Starts 300 units ABOVE its section. The headroom has to come from
+   layout, not from sticky: a sticky element only takes its offset while
+   it is stuck, so before a section pins, the svg sat at its field's top
+   and the whole band rendered 300px low — which is the hero's frame
+   dropping, and Section 02's line only snapping into place once it
+   pinned. With the field itself lifted, both states agree. */
 .field {
   position: absolute;
-  inset: 0;
+  top: calc(100dvh * -300 / 900);
+  bottom: 0;
+  left: 0;
+  right: 0;
   pointer-events: none;
 }
 

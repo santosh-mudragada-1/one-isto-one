@@ -36,7 +36,7 @@
   position: absolute;
   left: var(--margin-x);
   right: var(--gutter);
-  top: 21%;
+  top: 17%;
   padding-left: calc(var(--u) * 4);
   margin: 0;
   max-width: 15ch;
@@ -51,25 +51,25 @@
   position: absolute;
   left: var(--margin-x);
   right: var(--gutter);
-  top: 39%;
+  top: 35%;
   padding-left: calc(var(--u) * 4);
   max-width: 62ch;
 }
 
 .entry {
-  padding: calc(var(--u) * 1.75) 0;
+  padding: calc(var(--u) * 1.4) 0;
   opacity: 0;
 }
 
 .date {
   display: block;
   color: var(--fg-faint);
-  margin-bottom: calc(var(--u) * 1.25);
+  margin-bottom: calc(var(--u) * 0.9);
 }
 
 .body {
   margin: 0;
-  font-size: clamp(1rem, 1.5vw, 1.375rem);
+  font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
   line-height: 1.4;
   color: var(--fg-dim);
   position: relative;
@@ -93,7 +93,7 @@
 
 .aside {
   display: block;
-  margin-top: calc(var(--u) * 1.25);
+  margin-top: calc(var(--u) * 1);
   color: var(--fg-faint);
 }
 
